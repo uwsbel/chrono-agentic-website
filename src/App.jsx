@@ -9,7 +9,12 @@ import {
   pipelineSteps,
 } from './data.js'
 
-const asset = (path) => `${import.meta.env.BASE_URL}${path}`
+// Resolve public files from the module bundle instead of the current page URL.
+// This keeps media paths stable on repository subpaths and preview URLs that do
+// not end with a slash.
+const moduleUrl = import.meta.url
+const publicRoot = new URL('../', moduleUrl)
+const asset = (path) => new URL(path.replace(/^\/+/, ''), publicRoot).href
 
 const navItems = [
   ['overview', 'Overview'],
@@ -233,13 +238,6 @@ function Hero() {
     <section className="hero" id="top">
       <video className="hero__video" src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline preload="auto" aria-label="ChronoAgentic generated ROS city simulation" />
       <div className="hero__veil" />
-      <div className="hero__institutions" aria-label="Affiliations">
-        <a className="hero__lab" href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">
-          <img src={asset('sbel-lab-logo.png')} alt="" width="512" height="512" />
-          <span><strong>SBEL</strong><small>SIMULATION-BASED ENGINEERING LAB</small></span>
-        </a>
-        <span className="hero__university">UNIVERSITY OF WISCONSIN–MADISON</span>
-      </div>
       <div className="hero__content shell">
         <div className="hero__venue" data-reveal><i /> 2026 PREPRINT <i /></div>
         <h1 data-reveal>
@@ -557,7 +555,7 @@ function Paper() {
 function Footer() {
   return (
     <footer className="footer">
-      <div className="shell footer__main"><Brand /><p>Executable worlds for physically grounded simulation construction.</p><div><a href={asset('chronoagentic-paper.pdf')}>Paper</a><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
+      <div className="shell footer__main"><a className="footer__project" href="#top">Chrono<span>Agentic</span></a><p>Executable worlds for physically grounded simulation construction.</p><div><a href={asset('chronoagentic-paper.pdf')}>Paper</a><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
       <div className="shell footer__bottom"><span>ChronoAgentic · 2026</span><span>University of Wisconsin–Madison</span><a href="#top">Back to top ↑</a></div>
     </footer>
   )

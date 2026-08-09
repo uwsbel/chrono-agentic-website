@@ -320,60 +320,6 @@ dd {
     linear-gradient(90deg, rgba(8, 11, 12, 0.14), rgba(8, 11, 12, 0.02), rgba(8, 11, 12, 0.14));
 }
 
-.hero__institutions {
-  position: absolute;
-  z-index: 2;
-  top: 104px;
-  right: max(28px, calc((100vw - 1400px) / 2));
-  left: max(28px, calc((100vw - 1400px) / 2));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(255, 255, 255, 0.68);
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  line-height: 1.4;
-}
-
-.hero__lab {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.hero__lab > img {
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 8px 24px rgba(7, 10, 10, 0.18);
-  object-fit: cover;
-}
-
-.hero__lab > span {
-  display: grid;
-  gap: 1px;
-}
-
-.hero__lab strong {
-  color: #fff;
-  font-size: 9px;
-  letter-spacing: 0.18em;
-}
-
-.hero__lab small {
-  font-size: 6px;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
-}
-
-.hero__university {
-  text-align: right;
-}
-
 .hero__content {
   position: relative;
   z-index: 2;
@@ -1886,6 +1832,16 @@ dd {
   border-bottom: 1px solid var(--line);
 }
 
+.footer__project {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+.footer__project > span {
+  color: var(--red);
+}
+
 .footer__main > p {
   max-width: 390px;
   color: var(--muted);
@@ -2069,7 +2025,6 @@ dd {
   .section-heading h2 { font-size: clamp(42px, 10vw, 62px); }
   .section-heading > p { font-size: 14px; }
   .hero { min-height: max(760px, 100svh); }
-  .hero__institutions { top: 85px; }
   .hero__content { padding-top: 160px; }
   .hero h1 { font-size: clamp(35px, 7.3vw, 50px); }
   .abstract-block { grid-template-columns: 1fr; gap: 25px; }
@@ -2118,8 +2073,6 @@ dd {
   .brand__meta { font-size: 5.5px; }
   .hero { min-height: 780px; }
   .hero__video { object-position: 56% center; }
-  .hero__institutions { right: 17px; left: 17px; }
-  .hero__university { display: none; }
   .hero__content { padding: 145px 5px 75px; }
   .hero__venue { margin-bottom: 23px; font-size: 7px; }
   .hero h1 { font-size: clamp(31px, 9vw, 43px); line-height: 1.1; }
