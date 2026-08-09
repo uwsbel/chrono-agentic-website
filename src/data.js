@@ -64,27 +64,20 @@ export const pipelineSteps = [
   },
 ]
 
-export const categoryResults = [
-  { name: 'Motion & kinematics', short: 'Motion', sa: 100, pc: 90, joint: 90 },
-  { name: 'Interaction dynamics', short: 'Interaction', sa: 100, pc: 90, joint: 90 },
-  { name: 'Energy conservation', short: 'Energy', sa: 100, pc: 100, joint: 100 },
-  { name: 'Fluid & particles', short: 'Fluids', sa: 100, pc: 50, joint: 50 },
-  { name: 'Rigid-body dynamics', short: 'Rigid body', sa: 90, pc: 100, joint: 90 },
-  { name: 'Lighting & shadows', short: 'Lighting', sa: 80, pc: 90, joint: 70 },
-  { name: 'Deformation & elasticity', short: 'Deformation', sa: 90, pc: 90, joint: 80 },
-  { name: 'Scale & proportions', short: 'Scale', sa: 90, pc: 100, joint: 90 },
+export const physicsAudit = [
+  { name: 'Motion & kinematics', pure: 8, proxy: 2 },
+  { name: 'Interaction dynamics', pure: 6, proxy: 4 },
+  { name: 'Energy conservation', pure: 6, proxy: 4 },
+  { name: 'Fluid & particles', pure: 5, proxy: 5 },
+  { name: 'Rigid-body dynamics', pure: 9, proxy: 1 },
+  { name: 'Lighting & shadows', pure: 0, proxy: 10 },
+  { name: 'Deformation & elasticity', pure: 8, proxy: 2 },
+  { name: 'Scale & proportions', pure: 7, proxy: 3 },
 ]
 
-export const baselines = [
-  { name: 'ChronoAgentic', value: 82.5, ours: true },
-  { name: 'Pika', value: 52.5 },
-  { name: 'Kling', value: 42.5 },
-  { name: 'Sora', value: 40.0 },
-  { name: 'Luma', value: 32.5 },
-  { name: 'Gen-3', value: 28.7 },
-  { name: '10-model mean', value: 29.0, mean: true },
-]
-
+// PhyWorld entries below are an explicit allow-list sourced from
+// history_exp/physics_vs_animation_review.md. Do not add a benchmark clip
+// unless its prompt-grounded verdict is "Pure physics" in that audit.
 export const demos = [
   {
     title: 'FloWave focused-wave pool',
@@ -93,7 +86,7 @@ export const demos = [
     video: 'media/demo-flowave-pool.mp4',
     poster: 'media/poster-flowave-pool.jpg',
     accent: '#1794b8',
-    evidence: 'Pipeline accepted · numerical checks passed',
+    evidence: 'Pure physics · validated million-particle SPH',
     featured: true,
   },
   {
@@ -103,16 +96,16 @@ export const demos = [
     video: 'media/demo-stone-pond.mp4',
     poster: 'media/poster-stone-pond.jpg',
     accent: '#168c86',
-    evidence: 'PhyWorldBench · semantic + physics pass',
+    evidence: 'Pure physics · PWB 107-2 · coupled FSI/SPH',
   },
   {
-    title: 'Wind drives a field mechanism',
-    category: 'Motion & kinematics',
-    tag: 'Rigid bodies · wind load',
-    video: 'media/demo-windmill.mp4',
-    poster: 'media/poster-windmill.jpg',
-    accent: '#bd5d36',
-    evidence: 'PhyWorldBench · semantic + physics pass',
+    title: 'A flexible board takes an impact',
+    category: 'Deformable contact',
+    tag: 'FEA · Contact · Rebound',
+    video: 'media/demo-flexible-board.mp4',
+    poster: 'media/poster-flexible-board.jpg',
+    accent: '#bd7e36',
+    evidence: 'Pure physics · PWB 166-2 · rigid/FEA contact',
   },
   {
     title: 'Energy in a pendulum',
@@ -121,7 +114,7 @@ export const demos = [
     video: 'media/demo-pendulum.mp4',
     poster: 'media/poster-pendulum.jpg',
     accent: '#6959bd',
-    evidence: 'PhyWorldBench · semantic + physics pass',
+    evidence: 'Pure physics · PWB 095-2 · gravity + constraint',
   },
   {
     title: 'A spring stores and releases',
@@ -130,7 +123,7 @@ export const demos = [
     video: 'media/demo-spring.mp4',
     poster: 'media/poster-spring.jpg',
     accent: '#3e72b8',
-    evidence: 'PhyWorldBench · semantic + physics pass',
+    evidence: 'Pure physics · PWB 222-2 · elastic energy',
   },
   {
     title: 'A beach ball meets a pool',
@@ -139,7 +132,7 @@ export const demos = [
     video: 'media/demo-beach-ball.mp4',
     poster: 'media/poster-beach-ball.jpg',
     accent: '#d05b63',
-    evidence: 'PhyWorldBench · semantic + physics pass',
+    evidence: 'Pure physics · PWB 130-2 · coupled FSI/SPH',
   },
 ]
 

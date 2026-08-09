@@ -617,8 +617,7 @@ dd {
   margin-top: 75px;
 }
 
-.comparison-figure > button,
-.benchmark-worlds > button {
+.comparison-figure > button {
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -627,19 +626,16 @@ dd {
   background: #fff;
 }
 
-.comparison-figure img,
-.benchmark-worlds img {
+.comparison-figure img {
   width: 100%;
   transition: transform 0.5s ease;
 }
 
-.comparison-figure button:hover img,
-.benchmark-worlds button:hover img {
+.comparison-figure button:hover img {
   transform: scale(1.01);
 }
 
 .comparison-figure button > span,
-.benchmark-worlds button > span,
 .pipeline-viewer__figure > span,
 .ready-layout__figure > span,
 .interaction-details > button > span {
@@ -659,8 +655,7 @@ dd {
   backdrop-filter: blur(10px);
 }
 
-.comparison-figure figcaption,
-.benchmark-worlds figcaption {
+.comparison-figure figcaption {
   padding: 17px 4px 0;
   color: var(--muted);
   font-size: 10px;
@@ -1684,74 +1679,36 @@ dd {
   font-weight: 400;
 }
 
-.baseline-list {
-  margin-top: 36px;
+.audit-rules {
+  margin-top: 25px;
+  border-top: 1px solid var(--line);
 }
 
-.baseline-list > div {
+.audit-rules article {
   display: grid;
-  min-height: 61px;
-  grid-template-columns: 105px 1fr 36px;
-  align-items: center;
-  gap: 9px;
+  min-height: 91px;
+  padding: 16px 0;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
   border-bottom: 1px solid var(--line);
 }
 
-.baseline-list > div > span {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-  font-size: 8px;
-}
-
-.baseline-list > div > span b {
-  padding: 2px 5px;
-  border-radius: 4px;
-  color: #fff;
-  background: var(--red);
-  font-family: var(--mono);
-  font-size: 6px;
-}
-
-.baseline-list > div > i {
-  height: 7px;
-  overflow: hidden;
-  border-radius: 5px;
-  background: #dfddd6;
-}
-
-.baseline-list > div > i em {
-  display: block;
-  height: 100%;
-  border-radius: 5px;
-  background: #a7aaa3;
-}
-
-.baseline-list > div.is-ours > i em {
-  background: var(--red);
-}
-
-.baseline-list strong {
-  font-family: var(--mono);
-  font-size: 8px;
-  font-weight: 400;
-  text-align: right;
-}
-
-.evaluation-panel--baseline > p {
-  margin-top: 28px;
-  color: var(--muted);
-  font-size: 9px;
-  line-height: 1.6;
-}
-
-.evaluation-panel--baseline > p b {
+.audit-rules article > span {
+  padding-top: 2px;
   color: var(--red);
+  font-family: var(--mono);
+  font-size: 7px;
 }
 
-.benchmark-worlds {
-  margin-top: 65px;
+.audit-rules b {
+  font-size: 9px;
+}
+
+.audit-rules p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.55;
 }
 
 .footer {

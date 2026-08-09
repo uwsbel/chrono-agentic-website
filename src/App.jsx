@@ -2,9 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from './Icons.jsx'
 import {
   authors,
-  baselines,
-  categoryResults,
   demos,
+  physicsAudit,
   pipelineSteps,
 } from './data.js'
 
@@ -20,7 +19,7 @@ const navItems = [
   ['construction', 'Construction'],
   ['worlds', 'Worlds'],
   ['interaction', 'Interaction'],
-  ['evaluation', 'Evaluation'],
+  ['evaluation', 'Audit'],
 ]
 
 const constructionScenes = [
@@ -67,13 +66,13 @@ const worldDetails = {
     domain: 'Fluids',
     prompt: 'A stone is dropped into a still pond, creating a splash and outward-propagating waves.',
   },
-  'Wind drives a field mechanism': {
-    domain: 'Mechanics',
-    prompt: 'A field windmill accelerates under wind load and transfers motion through its mechanism.',
-  },
   'Energy in a pendulum': {
     domain: 'Mechanics',
     prompt: 'A pendulum swings between two peaks while exchanging potential and kinetic energy.',
+  },
+  'A flexible board takes an impact': {
+    domain: 'Deformables',
+    prompt: 'A falling rigid sphere contacts a flexible board, which bends under impact and rebounds from its solved FEA state.',
   },
   'A spring stores and releases': {
     domain: 'Deformables',
@@ -401,7 +400,7 @@ function Worlds({ onOpenMedia }) {
         <SectionHeading
           kicker="Solver-executed worlds"
           title={<>Real state.<br />Visible physics.</>}
-          copy="Only accepted simulator rollouts are shown here—no text-to-video baselines and no failed PhyWorld cases. Every clip comes from executable Chrono/PyChrono state with physical checks."
+          copy="This gallery is allow-listed against the prompt-grounded implementation audit. Every PhyWorld clip shown here is marked Pure physics; animation/proxy rows are excluded even when their rendered result passed a benchmark judge."
         />
         <div className="world-filters" data-reveal>{filters.map((item) => <button key={item} type="button" className={filter === item ? 'is-active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div>
         <div className="world-grid">{visible.map((demo, index) => <WorldCard key={demo.title} demo={demo} index={demos.indexOf(demo)} onOpen={onOpenMedia} />)}</div>
@@ -473,49 +472,48 @@ function SimulationReady({ onOpenMedia }) {
   )
 }
 
-function CategoryBars({ metric }) {
-  const label = metric === 'joint' ? 'Full correctness' : metric === 'sa' ? 'Semantic adherence' : 'Physical correctness'
+function PhysicsAuditBars() {
   return (
-    <div className="category-chart" aria-label={`${label} by physics category`}>
+    <div className="category-chart" aria-label="Pure-physics implementation share by benchmark category">
       <div className="category-chart__scale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
-      {categoryResults.map((row) => <div className="category-row" key={row.name}><span>{row.name}</span><div><i style={{ width: `${row[metric]}%` }} /><b>{row[metric]}%</b></div></div>)}
+      {physicsAudit.map((row) => {
+        const share = (row.pure / (row.pure + row.proxy)) * 100
+        return <div className="category-row" key={row.name}><span>{row.name}</span><div><i style={{ width: `${share}%` }} /><b>{row.pure}/{row.pure + row.proxy}</b></div></div>
+      })}
     </div>
   )
 }
 
-function Evaluation({ onOpenMedia }) {
-  const [metric, setMetric] = useState('joint')
-  const comparison = baselines.slice(0, 4)
-
+function Evaluation() {
   return (
     <section className="evaluation section" id="evaluation">
       <div className="shell">
         <SectionHeading
-          kicker="PhyWorldBench · 80 demos · 8 categories"
-          title={<>Does the world look right<br /><em>and</em> behave right?</>}
-          copy="Each rollout is scored over the full video for semantic adherence and scenario-specific physical correctness. Benchmark verdicts never enter the repair loop."
+          kicker="Prompt-grounded implementation audit · 80 runs"
+          title={<>49 pure physics.<br />31 proxies excluded.</>}
+          copy="The audit asks whether the mechanism named by the prompt actually causes the result through its corresponding solver. Downstream dynamics cannot rescue a missing causal domain."
         />
         <div className="evaluation-numbers" data-reveal>
-          <article><strong><AnimatedMetric value={82.5} suffix="%" decimals={1} /></strong><span>Full correctness</span><p>semantic adherence ∧ physical correctness</p></article>
-          <article><strong><AnimatedMetric value={93.8} suffix="%" decimals={1} /></strong><span>Semantic adherence</span><p>required objects and event present</p></article>
-          <article><strong><AnimatedMetric value={88.8} suffix="%" decimals={1} /></strong><span>Physical correctness</span><p>all key physical standards hold</p></article>
-          <article><strong><AnimatedMetric value={135} /><em>/146</em></strong><span>Criteria satisfied</span><p>individual physical standards passed</p></article>
+          <article><strong><AnimatedMetric value={49} /></strong><span>Pure physics</span><p>prompt-grounded mechanism is solver-driven</p></article>
+          <article><strong><AnimatedMetric value={31} /></strong><span>Animation / proxy</span><p>excluded from the website demo gallery</p></article>
+          <article><strong><AnimatedMetric value={61.25} suffix="%" decimals={2} /></strong><span>Pure implementation share</span><p>49 of the audited 80 PhyWorld runs</p></article>
+          <article><strong><AnimatedMetric value={0} /></strong><span>Proxy demos shown</span><p>gallery policy after the implementation audit</p></article>
         </div>
         <div className="evaluation-grid">
           <div className="evaluation-panel" data-reveal>
-            <div className="evaluation-panel__head"><div><span>CATEGORY ANALYSIS</span><h3>Correctness across physical phenomena</h3></div><div>{[['joint', 'Full'], ['sa', 'Semantic'], ['pc', 'Physical']].map(([id, label]) => <button key={id} type="button" className={metric === id ? 'is-active' : ''} onClick={() => setMetric(id)}>{label}</button>)}</div></div>
-            <CategoryBars metric={metric} />
+            <div className="evaluation-panel__head"><div><span>IMPLEMENTATION INVENTORY</span><h3>Pure-physics share by category</h3></div><small>PURE / TOTAL</small></div>
+            <PhysicsAuditBars />
           </div>
-          <div className="evaluation-panel evaluation-panel--baseline" data-reveal>
-            <div className="evaluation-panel__head"><div><span>MATCHED COMPARISON</span><h3>Full correctness</h3></div><small>%</small></div>
-            <div className="baseline-list">{comparison.map((item) => <div className={item.ours ? 'is-ours' : ''} key={item.name}><span>{item.name}{item.ours && <b>ours</b>}</span><i><em style={{ width: `${item.value}%` }} /></i><strong>{item.value.toFixed(1)}</strong></div>)}</div>
-            <p><b>+30.0 pp</b> over the strongest of ten text-to-video baselines under the same full-video judging protocol.</p>
+          <div className="evaluation-panel evaluation-panel--policy" data-reveal>
+            <div className="evaluation-panel__head"><div><span>SITE ALLOW-LIST</span><h3>What counts as a demo here</h3></div><small>PURE ONLY</small></div>
+            <div className="audit-rules">
+              <article><span>01</span><div><b>Named cause is modeled</b><p>Contact, gravity, joints, FEA, fracture, or coupled SPH/FSI generates the scored response.</p></div></article>
+              <article><span>02</span><div><b>Experimental inputs are allowed</b><p>A release, motorized boundary, or applied load may initiate a response that then evolves physically.</p></div></article>
+              <article><span>03</span><div><b>Substitute effects are rejected</b><p>Posed state, scheduled geometry, renderer-only optics, or hand-authored proxy forces do not qualify.</p></div></article>
+              <article><span>04</span><div><b>Pure-physics rows only</b><p>The website data carries the audit ID and verdict for every displayed PhyWorld clip.</p></div></article>
+            </div>
           </div>
         </div>
-        <figure className="benchmark-worlds" data-reveal>
-          <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/pwb-grid.png', alt: 'Accepted worlds across PhyWorldBench categories', caption: 'Accepted ChronoAgentic simulations across all eight evaluated physics categories. Time advances from left to right.' })}><img src={asset('media/pwb-grid.png')} alt="Accepted worlds across PhyWorldBench categories" loading="lazy" /><span><Icon name="expand" size={15} /> Expand results</span></button>
-          <figcaption>Accepted simulations across all eight evaluated physics categories. Time advances from left to right.</figcaption>
-        </figure>
       </div>
     </section>
   )
@@ -571,7 +569,7 @@ export default function App() {
         <Worlds onOpenMedia={setMedia} />
         <Interaction onOpenMedia={setMedia} />
         <SimulationReady onOpenMedia={setMedia} />
-        <Evaluation onOpenMedia={setMedia} />
+        <Evaluation />
       </main>
       <Footer />
       <MediaModal media={media} onClose={() => setMedia(null)} />
