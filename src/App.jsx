@@ -167,9 +167,12 @@ function AnimatedMetric({ value, suffix = '', decimals = 0 }) {
 
 function Brand() {
   return (
-    <a className="brand" href="#top" aria-label="ChronoAgentic home">
-      <span className="brand__mark" aria-hidden="true"><i /><i /><i /></span>
-      <span className="brand__name">Chrono<span>Agentic</span></span>
+    <a className="brand" href="#top" aria-label="ChronoAgentic — SBEL Lab home">
+      <img className="brand__logo" src={asset('sbel-lab-logo.png')} alt="" width="512" height="512" />
+      <span className="brand__copy">
+        <span className="brand__meta">SBEL · UW–MADISON</span>
+        <span className="brand__name">Chrono<span>Agentic</span></span>
+      </span>
     </a>
   )
 }
@@ -231,8 +234,11 @@ function Hero() {
       <video className="hero__video" src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline preload="auto" aria-label="ChronoAgentic generated ROS city simulation" />
       <div className="hero__veil" />
       <div className="hero__institutions" aria-label="Affiliations">
-        <span><b>W</b> UW–MADISON</span>
-        <span>SIMULATION-BASED<br />ENGINEERING LAB</span>
+        <a className="hero__lab" href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">
+          <img src={asset('sbel-lab-logo.png')} alt="" width="512" height="512" />
+          <span><strong>SBEL</strong><small>SIMULATION-BASED ENGINEERING LAB</small></span>
+        </a>
+        <span className="hero__university">UNIVERSITY OF WISCONSIN–MADISON</span>
       </div>
       <div className="hero__content shell">
         <div className="hero__venue" data-reveal><i /> 2026 PREPRINT <i /></div>

@@ -145,42 +145,51 @@ dd {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 17px;
+  gap: 11px;
+}
+
+.brand__logo {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(7, 10, 10, 0.16);
+  object-fit: cover;
+}
+
+.has-scrolled .brand__logo,
+.footer .brand__logo {
+  border-color: rgba(22, 23, 21, 0.09);
+  box-shadow: 0 5px 16px rgba(22, 23, 21, 0.08);
+}
+
+.brand__copy {
+  display: grid;
+  gap: 3px;
+  line-height: 1;
+}
+
+.brand__meta {
+  color: rgba(255, 255, 255, 0.58);
+  font-family: var(--mono);
+  font-size: 6px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.brand__name {
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: -0.045em;
 }
 
-.brand__mark {
-  position: relative;
-  display: grid;
-  width: 30px;
-  height: 30px;
-  overflow: hidden;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.38);
-  border-radius: 8px;
-  background: rgba(12, 13, 13, 0.6);
-  backdrop-filter: blur(10px);
+.has-scrolled .brand__meta,
+.footer .brand__meta,
+.menu-open .brand__meta {
+  color: #7c7f79;
 }
-
-.has-scrolled .brand__mark,
-.footer .brand__mark {
-  border-color: transparent;
-  background: var(--ink);
-}
-
-.brand__mark i {
-  position: absolute;
-  width: 18px;
-  height: 2px;
-  border-radius: 3px;
-  background: #fff;
-}
-
-.brand__mark i:first-child { transform: translateY(-5px) rotate(-23deg); }
-.brand__mark i:nth-child(2) { width: 14px; background: var(--red); transform: translateX(2px) rotate(23deg); }
-.brand__mark i:last-child { transform: translateY(5px) rotate(-23deg); }
 
 .brand__name > span {
   color: #ff6b50;
@@ -327,28 +336,41 @@ dd {
   line-height: 1.4;
 }
 
-.hero__institutions span:first-child {
+.hero__lab {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.hero__institutions b {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
+.hero__lab > img {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 7px;
-  color: #fff;
-  font-family: Georgia, serif;
-  font-size: 18px;
-  letter-spacing: 0;
-  background: rgba(15, 17, 18, 0.32);
-  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(7, 10, 10, 0.18);
+  object-fit: cover;
 }
 
-.hero__institutions span:last-child {
+.hero__lab > span {
+  display: grid;
+  gap: 1px;
+}
+
+.hero__lab strong {
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+
+.hero__lab small {
+  font-size: 6px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.hero__university {
   text-align: right;
 }
 
@@ -2042,7 +2064,6 @@ dd {
   .nav__code,
   .has-scrolled .nav__code { min-height: 52px; justify-content: center; border-color: var(--ink); color: #fff; background: var(--ink); }
   .menu-open .site-header { color: var(--ink); }
-  .menu-open .brand__mark { border-color: transparent; background: var(--ink); }
   .menu-open .brand__name > span { color: var(--red); }
   .section { padding: 88px 0; }
   .section-heading h2 { font-size: clamp(42px, 10vw, 62px); }
@@ -2091,12 +2112,14 @@ dd {
   .section { padding: 78px 0; }
   .section-kicker { font-size: 8px; }
   .section-heading h2 { font-size: 11.5vw; }
-  .brand { font-size: 15px; }
-  .brand__mark { width: 28px; height: 28px; }
+  .brand { gap: 8px; }
+  .brand__logo { width: 30px; height: 30px; flex-basis: 30px; border-radius: 7px; }
+  .brand__name { font-size: 14px; }
+  .brand__meta { font-size: 5.5px; }
   .hero { min-height: 780px; }
   .hero__video { object-position: 56% center; }
   .hero__institutions { right: 17px; left: 17px; }
-  .hero__institutions span:last-child { display: none; }
+  .hero__university { display: none; }
   .hero__content { padding: 145px 5px 75px; }
   .hero__venue { margin-bottom: 23px; font-size: 7px; }
   .hero h1 { font-size: clamp(31px, 9vw, 43px); line-height: 1.1; }
