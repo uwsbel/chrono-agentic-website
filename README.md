@@ -43,6 +43,6 @@ public/media/      research figures, simulation videos, posters, and social imag
 
 ## Source material
 
-The website is grounded in the local `chrono-agentic`, `chrono-studio`, and manuscript repositories. Its structure follows the project's main narrative: executable code as the world representation, a six-stage construction and review loop, live ROS interaction, and a prompt-grounded implementation audit of 80 PhyWorldBench runs. The gallery is an explicit allow-list from `history_exp/physics_vs_animation_review.md`: only rows classified as `Pure physics` are displayed. Benchmark success alone is not sufficient. The featured FloWave pool is an accepted million-particle SPH run from the same construction pipeline.
+The website is grounded in the local `chrono-agentic`, `chrono-studio`, and manuscript repositories. Its structure follows the project's main narrative: executable code as the world representation, a six-stage construction and review loop, live ROS interaction, and a prompt-grounded implementation audit of 80 PhyWorldBench runs. The gallery is an explicit allow-list from `history_exp/physics_vs_animation_review.md`: ten audited rows classified as `Pure physics` are displayed, and the UI also enforces that verdict before rendering a card. Benchmark success alone is not sufficient. The featured FloWave pool is an accepted million-particle SPH run from the same construction pipeline.
 
 Website source code is MIT licensed. Research figures and simulation media remain copyright of their respective authors; see [NOTICE.md](NOTICE.md).

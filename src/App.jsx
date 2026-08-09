@@ -74,6 +74,26 @@ const worldDetails = {
     domain: 'Deformables',
     prompt: 'A falling rigid sphere contacts a flexible board, which bends under impact and rebounds from its solved FEA state.',
   },
+  'Two billiard balls exchange momentum': {
+    domain: 'Mechanics',
+    prompt: 'Two billiard balls collide; contact impulse exchanges momentum, and friction determines their subsequent rolling.',
+  },
+  'A slack rope pulls a box': {
+    domain: 'Mechanics',
+    prompt: 'A segmented rope straightens, becomes taut, and transmits tension through its constraints to a frictional box.',
+  },
+  'A sponge compresses under load': {
+    domain: 'Deformables',
+    prompt: 'Driven platens load a soft sponge while its FEA and contact state produce the visible compression and recovery.',
+  },
+  'Water forms a driven vortex': {
+    domain: 'Fluids',
+    prompt: 'A motor-driven BCE spoon transfers momentum into SPH water and creates a vortex through the fluid solve.',
+  },
+  'Thickness changes fracture': {
+    domain: 'Deformables',
+    prompt: 'The same dynamic hammer contacts thin and thick glass panes, and measured stress produces thickness-dependent fracture.',
+  },
   'A spring stores and releases': {
     domain: 'Deformables',
     prompt: 'An elastic spring deforms, stores energy, and returns toward its resting configuration.',
@@ -383,7 +403,7 @@ function WorldCard({ demo, index, onOpen }) {
         <span>{detail.domain} · {demo.tag}</span>
         <h3>{demo.title}</h3>
         <p>“{detail.prompt}”</p>
-        <small><i />{demo.evidence}</small>
+        <small><i />{demo.verdict}{demo.auditId && ` · PWB ${demo.auditId}`} · {demo.evidence}</small>
       </div>
     </article>
   )
@@ -392,7 +412,10 @@ function WorldCard({ demo, index, onOpen }) {
 function Worlds({ onOpenMedia }) {
   const [filter, setFilter] = useState('All')
   const filters = ['All', 'Mechanics', 'Fluids', 'Deformables']
-  const visible = useMemo(() => demos.filter((demo) => filter === 'All' || worldDetails[demo.title].domain === filter), [filter])
+  const visible = useMemo(
+    () => demos.filter((demo) => demo.verdict === 'Pure physics' && (filter === 'All' || worldDetails[demo.title].domain === filter)),
+    [filter],
+  )
 
   return (
     <section className="worlds section" id="worlds">
@@ -400,7 +423,7 @@ function Worlds({ onOpenMedia }) {
         <SectionHeading
           kicker="Solver-executed worlds"
           title={<>Real state.<br />Visible physics.</>}
-          copy="This gallery is allow-listed against the prompt-grounded implementation audit. Every PhyWorld clip shown here is marked Pure physics; animation/proxy rows are excluded even when their rendered result passed a benchmark judge."
+          copy="Ten prompt-audited PhyWorld rollouts and the validated FloWave pool form this Pure physics allow-list. Animation/proxy rows stay excluded even when their rendered result passed a benchmark judge."
         />
         <div className="world-filters" data-reveal>{filters.map((item) => <button key={item} type="button" className={filter === item ? 'is-active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div>
         <div className="world-grid">{visible.map((demo, index) => <WorldCard key={demo.title} demo={demo} index={demos.indexOf(demo)} onOpen={onOpenMedia} />)}</div>
