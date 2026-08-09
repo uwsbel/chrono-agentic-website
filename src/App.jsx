@@ -1,118 +1,86 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from './Icons.jsx'
-import { authors, citation, demos } from './data.js'
+import {
+  authors,
+  baselines,
+  categoryResults,
+  citation,
+  demos,
+  pipelineSteps,
+} from './data.js'
 
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`
 
 const navItems = [
-  ['platform', 'Platform'],
-  ['use-cases', 'Use cases'],
-  ['studio', 'Studio'],
+  ['overview', 'Overview'],
+  ['construction', 'Construction'],
   ['worlds', 'Worlds'],
-  ['technology', 'Technology'],
+  ['interaction', 'Interaction'],
+  ['evaluation', 'Evaluation'],
+  ['paper', 'Paper'],
 ]
 
-const promptExamples = [
-  'Build a driveable city with dense streets, live ROS control, and three sensor cameras.',
-  'Drop a stone into a still pond and verify the fluid–solid interaction.',
-  'Create a wind-driven mechanism and measure its angular response over time.',
-]
-
-const buildStages = [
+const constructionScenes = [
   {
-    id: '01',
-    label: 'Specify',
-    title: 'Say what the world should do.',
-    copy: 'Start from language or an image. The planner turns intent into a structured contract for geometry, bodies, joints, materials, cameras, and physical objectives.',
-    icon: 'spark',
-    artifact: 'world.plan',
-  },
-  {
-    id: '02',
-    label: 'Build',
-    title: 'Compile intent into simulation code.',
-    copy: 'Simulator skills, retrieved APIs, native platforms, and reusable assets are composed into one standalone, inspectable PyChrono program.',
-    icon: 'code',
-    artifact: 'simulation.py',
-  },
-  {
-    id: '03',
-    label: 'Simulate',
-    title: 'Run the world through real physics.',
-    copy: 'Cheap static and physics-only checks run first. Only healthy worlds advance to sensor cameras, full rendering, and interactive control.',
-    icon: 'play',
-    artifact: 'runtime',
-  },
-  {
-    id: '04',
-    label: 'Verify',
-    title: 'Know why a world can be trusted.',
-    copy: 'Rendered observations, logs, and trajectories are tested against the original objectives. A grounded repair loop patches failures and runs again.',
-    icon: 'shield',
-    artifact: 'evidence',
-  },
-]
-
-const useCases = [
-  {
-    eyebrow: 'Robotics & autonomy',
-    title: 'Give autonomous systems a world to learn in.',
-    copy: 'Build sensor-rich, controllable environments for robot and vehicle development—before the first real-world run.',
-    tags: ['ROS control', 'camera + lidar', 'terrain'],
-    media: 'media/hero-city.mp4',
+    name: 'Interactive ROS city',
+    prompt: 'Build a driveable city with dense streets, varied buildings, and live ROS control.',
+    video: 'media/hero-city.mp4',
     poster: 'media/poster-hero-city.jpg',
-    type: 'video',
-    className: 'use-card--hero',
+    systems: 'Vehicle · sensors · ROS',
+    detail: '130 scene assets · 3 cameras · live control',
   },
   {
-    eyebrow: 'Industrial digital twins',
-    title: 'Compose asset-rich operating environments.',
-    copy: 'Turn scene intent into reusable, simulation-ready objects with explicit scale, collision, material, and placement.',
-    tags: ['3D assets', 'collision', 'scene layout'],
-    media: 'media/ros-city.png',
-    type: 'image',
-    className: 'use-card--tall',
+    name: 'Physically arranged dining room',
+    prompt: 'Create a furnished dining room where every object is supported, correctly oriented, and stable under gravity.',
+    video: 'media/demo-dining-room.mp4',
+    poster: 'media/poster-dining-room.jpg',
+    systems: 'Assets · contact · placement',
+    detail: 'visual review · trajectory checks · repair',
   },
   {
-    eyebrow: 'Multiphysics engineering',
-    title: 'Go beyond rigid bodies.',
-    copy: 'Construct fluid–solid interaction, deformation, elasticity, contacts, mechanisms, and energy-driven systems.',
-    tags: ['FSI', 'FEA', 'multibody'],
-    media: 'media/demo-stone-pond.mp4',
+    name: 'Stone entering still water',
+    prompt: 'Drop a stone into a still pond and preserve the fluid–solid interaction through the full rollout.',
+    video: 'media/demo-stone-pond.mp4',
     poster: 'media/poster-stone-pond.jpg',
-    type: 'video',
-    className: 'use-card--wide',
+    systems: 'SPH · contact · free surface',
+    detail: 'fluid–solid coupling · recorded trajectory',
   },
   {
-    eyebrow: 'Virtual engineering',
-    title: 'Test behavior before committing hardware.',
-    copy: 'Inspect source, solver state, trajectories, and visual output from the same executable world.',
-    tags: ['replayable', 'inspectable', 'measurable'],
-    media: 'media/demo-pendulum.mp4',
-    poster: 'media/poster-pendulum.jpg',
-    type: 'video',
-    className: 'use-card--small',
-  },
-  {
-    eyebrow: 'Synthetic sensors',
-    title: 'Observe the world from any camera.',
-    copy: 'Generate time-aligned visual evidence from simulator-native camera, light, shadow, and sensor systems.',
-    tags: ['OptiX', 'sensor output', 'telemetry'],
-    media: 'media/demo-light-vase.mp4',
-    poster: 'media/poster-light-vase.jpg',
-    type: 'video',
-    className: 'use-card--small',
+    name: 'Elastic spring system',
+    prompt: 'Construct a spring that stores and releases energy while its deformation remains physically consistent.',
+    video: 'media/demo-spring.mp4',
+    poster: 'media/poster-spring.jpg',
+    systems: 'FEA · elasticity · energy',
+    detail: 'deformable state · sensor-camera render',
   },
 ]
 
-const capabilities = [
-  ['Multibody', 'Bodies, joints, contacts, mechanisms'],
-  ['Robotics', 'Native platforms, control, ROS worlds'],
-  ['Vehicles', 'Terrain, tires, sensors, autonomy'],
-  ['FEA', 'Beams, shells, cables, deformation'],
-  ['Fluids', 'SPH, particles, fluid–solid coupling'],
-  ['Sensors', 'Cameras, lidar, light, telemetry'],
-]
+const worldDetails = {
+  'A stone enters still water': {
+    domain: 'Fluids',
+    prompt: 'A stone is dropped into a still pond, creating a splash and outward-propagating waves.',
+  },
+  'Wind drives a field mechanism': {
+    domain: 'Mechanics',
+    prompt: 'A field windmill accelerates under wind load and transfers motion through its mechanism.',
+  },
+  'Energy in a pendulum': {
+    domain: 'Mechanics',
+    prompt: 'A pendulum swings between two peaks while exchanging potential and kinetic energy.',
+  },
+  'Light falls on a vase': {
+    domain: 'Materials & light',
+    prompt: 'A light source illuminates a vase and casts a geometrically consistent shadow.',
+  },
+  'A spring stores and releases': {
+    domain: 'Materials & light',
+    prompt: 'An elastic spring deforms, stores energy, and returns toward its resting configuration.',
+  },
+  'A beach ball meets a pool': {
+    domain: 'Fluids',
+    prompt: 'A beach ball falls into a pool, displaces water, and remains buoyant at the free surface.',
+  },
+}
 
 function usePageEffects(setActiveSection) {
   useEffect(() => {
@@ -137,7 +105,7 @@ function usePageEffects(setActiveSection) {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
         if (visible?.target?.id) setActiveSection(visible.target.id)
       },
-      { rootMargin: '-28% 0px -62% 0px', threshold: [0, 0.2, 0.5] },
+      { rootMargin: '-24% 0px -66% 0px', threshold: [0, 0.2, 0.45] },
     )
 
     navItems.forEach(([id]) => {
@@ -147,32 +115,24 @@ function usePageEffects(setActiveSection) {
 
     const updateScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight
-      const progress = max > 0 ? window.scrollY / max : 0
-      document.documentElement.style.setProperty('--scroll-progress', String(progress))
-      document.documentElement.classList.toggle('has-scrolled', window.scrollY > 36)
-    }
-
-    const updatePointer = (event) => {
-      document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`)
-      document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`)
+      document.documentElement.style.setProperty('--scroll-progress', String(max > 0 ? window.scrollY / max : 0))
+      document.documentElement.classList.toggle('has-scrolled', window.scrollY > 80)
     }
 
     updateScroll()
     window.addEventListener('scroll', updateScroll, { passive: true })
-    window.addEventListener('pointermove', updatePointer, { passive: true })
 
     return () => {
       revealObserver.disconnect()
       sectionObserver.disconnect()
       window.removeEventListener('scroll', updateScroll)
-      window.removeEventListener('pointermove', updatePointer)
     }
   }, [setActiveSection])
 }
 
 function AnimatedMetric({ value, suffix = '', decimals = 0 }) {
-  const [display, setDisplay] = useState(0)
   const ref = useRef(null)
+  const [display, setDisplay] = useState(0)
 
   useEffect(() => {
     const node = ref.current
@@ -184,7 +144,6 @@ function AnimatedMetric({ value, suffix = '', decimals = 0 }) {
       started = true
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setDisplay(value)
-        observer.disconnect()
         return
       }
       const start = performance.now()
@@ -195,7 +154,7 @@ function AnimatedMetric({ value, suffix = '', decimals = 0 }) {
       }
       frame = requestAnimationFrame(tick)
       observer.disconnect()
-    }, { threshold: 0.5 })
+    }, { threshold: 0.55 })
     observer.observe(node)
     return () => {
       observer.disconnect()
@@ -206,27 +165,11 @@ function AnimatedMetric({ value, suffix = '', decimals = 0 }) {
   return <span ref={ref}>{display.toFixed(decimals)}{suffix}</span>
 }
 
-function Wordmark({ inverse = false }) {
+function Brand() {
   return (
-    <a className={`wordmark ${inverse ? 'wordmark--inverse' : ''}`} href="#top" aria-label="ChronoAgentic home">
-      <span className="wordmark__symbol" aria-hidden="true"><i /><i /><i /></span>
-      <span>Chrono<span>Agentic</span></span>
-    </a>
-  )
-}
-
-function ButtonLink({ href, children, icon = 'arrow', tone = 'dark', download = false }) {
-  const external = href?.startsWith('http')
-  return (
-    <a
-      className={`button button--${tone}`}
-      href={href}
-      download={download}
-      target={external ? '_blank' : undefined}
-      rel={external ? 'noreferrer' : undefined}
-    >
-      <span>{children}</span>
-      <span className="button__icon"><Icon name={icon} size={17} /></span>
+    <a className="brand" href="#top" aria-label="ChronoAgentic home">
+      <span className="brand__mark" aria-hidden="true"><i /><i /><i /></span>
+      <span className="brand__name">Chrono<span>Agentic</span></span>
     </a>
   )
 }
@@ -242,25 +185,16 @@ function Navigation({ activeSection }) {
   return (
     <header className="site-header">
       <div className="scroll-progress" aria-hidden="true" />
-      <nav className="nav shell" aria-label="Primary navigation">
-        <Wordmark />
+      <nav className="nav shell-wide" aria-label="Primary navigation">
+        <Brand />
         <div className={`nav__panel ${open ? 'is-open' : ''}`}>
           <div className="nav__links">
             {navItems.map(([id, label]) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                className={activeSection === id ? 'is-active' : ''}
-                onClick={() => setOpen(false)}
-              >
-                {label}
-              </a>
+              <a key={id} href={`#${id}`} className={activeSection === id ? 'is-active' : ''} onClick={() => setOpen(false)}>{label}</a>
             ))}
           </div>
-          <a className="nav__cta" href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">
-            <Icon name="github" size={16} />
-            <span>Build with it</span>
-            <Icon name="external" size={13} />
+          <a className="nav__code" href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">
+            <Icon name="github" size={15} /> Code
           </a>
         </div>
         <button className="nav__menu" type="button" aria-label="Toggle navigation" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -271,10 +205,20 @@ function Navigation({ activeSection }) {
   )
 }
 
-function SectionHeading({ eyebrow, title, copy, light = false, center = false }) {
+function ResourceLink({ href, icon, children, primary = false }) {
+  const external = href.startsWith('http')
   return (
-    <div className={`section-heading ${light ? 'section-heading--light' : ''} ${center ? 'section-heading--center' : ''}`} data-reveal>
-      <div className="eyebrow"><i />{eyebrow}</div>
+    <a className={`resource-link ${primary ? 'resource-link--primary' : ''}`} href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>
+      <Icon name={icon} size={16} />
+      <span>{children}</span>
+    </a>
+  )
+}
+
+function SectionHeading({ kicker, title, copy, light = false, align = 'center' }) {
+  return (
+    <div className={`section-heading section-heading--${align} ${light ? 'section-heading--light' : ''}`} data-reveal>
+      <span className="section-kicker">{kicker}</span>
       <h2>{title}</h2>
       {copy && <p>{copy}</p>}
     </div>
@@ -282,493 +226,323 @@ function SectionHeading({ eyebrow, title, copy, light = false, center = false })
 }
 
 function Hero() {
-  const [prompt, setPrompt] = useState(0)
-
   return (
     <section className="hero" id="top">
-      <div className="hero__aurora" aria-hidden="true"><i /><i /><i /></div>
-      <div className="shell hero__content">
-        <div className="hero__badge" data-reveal>
-          <span><i /> Executable world platform</span>
-          <b>Built on Project Chrono</b>
-        </div>
+      <video className="hero__video" src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline preload="auto" aria-label="ChronoAgentic generated ROS city simulation" />
+      <div className="hero__veil" />
+      <div className="hero__institutions" aria-label="Affiliations">
+        <span><b>W</b> UW–MADISON</span>
+        <span>SIMULATION-BASED<br />ENGINEERING LAB</span>
+      </div>
+      <div className="hero__content shell">
+        <div className="hero__venue" data-reveal><i /> 2026 PREPRINT <i /></div>
         <h1 data-reveal>
-          <span>Build worlds</span>
-          <span>that <em>behave.</em></span>
+          <span className="hero__name">ChronoAgentic:</span>
+          <span>A Code-based Multi-Agent World Simulator for Physically Grounded Simulation Construction</span>
         </h1>
-        <p className="hero__lead" data-reveal>
-          Turn a sentence or image into a living physics environment—planned, constructed, simulated, and verified as executable PyChrono code.
-        </p>
-        <div className="hero__actions" data-reveal>
-          <ButtonLink href="#platform" tone="red">Explore the platform</ButtonLink>
-          <ButtonLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github" tone="glass">View on GitHub</ButtonLink>
-        </div>
-      </div>
-
-      <div className="shell hero-world" data-reveal>
-        <div className="hero-world__media">
-          <video
-            src={asset('media/hero-city.mp4')}
-            poster={asset('media/poster-hero-city.jpg')}
-            muted
-            loop
-            autoPlay
-            playsInline
-            preload="auto"
-            aria-label="A generated driveable city running in ChronoAgentic"
-          />
-          <div className="hero-world__shade" />
-          <div className="hero-world__hud hero-world__hud--top">
-            <span><i /> WORLD ONLINE</span>
-            <span>ROS_CITY / CHASE_CAM</span>
-            <span>PYCHRONO 10</span>
-          </div>
-          <div className="hero-world__telemetry">
-            <small>LIVE STATE</small>
-            <strong>07.42 <em>s</em></strong>
-            <span><i /> PHYSICS STABLE</span>
-          </div>
-        </div>
-        <div className="hero-composer">
-          <div className="hero-composer__brand"><Icon name="spark" size={18} /><span>Describe a world</span></div>
-          <p key={prompt}>{promptExamples[prompt]}</p>
-          <div className="hero-composer__footer">
-            <div className="prompt-dots" aria-label="Prompt examples">
-              {promptExamples.map((item, index) => (
-                <button key={item} type="button" aria-label={`Show example ${index + 1}`} className={prompt === index ? 'is-active' : ''} onClick={() => setPrompt(index)} />
-              ))}
-            </div>
-            <button type="button" onClick={() => setPrompt((prompt + 1) % promptExamples.length)}>
-              <span>Generate world</span><Icon name="arrow" size={17} />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="shell hero-proof" data-reveal>
-        <div><b>Prompt</b><span>Natural language or image</span></div>
-        <Icon name="arrow" size={16} />
-        <div><b>Program</b><span>Inspectable PyChrono code</span></div>
-        <Icon name="arrow" size={16} />
-        <div><b>World</b><span>Physics + sensors + control</span></div>
-        <Icon name="arrow" size={16} />
-        <div><b>Evidence</b><span>Video + trajectories + verdict</span></div>
-      </div>
-    </section>
-  )
-}
-
-function CapabilityRail() {
-  const items = ['MULTIBODY', 'ROBOTICS', 'VEHICLES', 'FINITE ELEMENTS', 'FLUIDS + FSI', 'SENSORS', 'ROS WORLDS']
-  return (
-    <div className="capability-rail" aria-label="Supported simulation domains">
-      <div className="capability-rail__track">
-        {[...items, ...items].map((item, index) => <span key={`${item}-${index}`}><i />{item}</span>)}
-      </div>
-    </div>
-  )
-}
-
-function PlatformIntro() {
-  return (
-    <section className="platform-intro section" id="platform">
-      <div className="shell">
-        <SectionHeading
-          eyebrow="A world compiler for physical AI"
-          title={<>A prompt should become<br />more than a picture.</>}
-          copy="ChronoAgentic creates the state behind the scene: the bodies, constraints, material properties, controls, sensors, and solver choices that make a world actually run."
-          center
-        />
-        <div className="platform-pillars">
-          <article data-reveal>
-            <span className="pillar-number">01</span>
-            <div className="pillar-icon pillar-icon--red"><Icon name="paper" size={25} /></div>
-            <h3>World specification</h3>
-            <p>Language becomes a structured scene contract before construction begins.</p>
-            <div className="mini-schema"><span>bodies</span><span>joints</span><span>objectives</span><span>cameras</span></div>
-          </article>
-          <article data-reveal>
-            <span className="pillar-number">02</span>
-            <div className="pillar-icon pillar-icon--blue"><Icon name="code" size={25} /></div>
-            <h3>Physics-native build</h3>
-            <p>Plans compile into explicit, editable programs running on Project Chrono.</p>
-            <div className="mini-code"><i /><i /><i /><i /><b /></div>
-          </article>
-          <article data-reveal>
-            <span className="pillar-number">03</span>
-            <div className="pillar-icon pillar-icon--green"><Icon name="shield" size={25} /></div>
-            <h3>Evidence engine</h3>
-            <p>Every accepted world is backed by visual and numerical runtime evidence.</p>
-            <div className="mini-evidence"><span><Icon name="check" size={11} /> visual</span><span><Icon name="check" size={11} /> physical</span><span><Icon name="check" size={11} /> replayable</span></div>
-          </article>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function BuildVisual({ active }) {
-  if (active === 0) {
-    return (
-      <div className="build-canvas build-canvas--specify stage-enter">
-        <div className="request-card">
-          <small>WORLD REQUEST</small>
-          <p>“Build a driveable city with dense streets, varied buildings, and live ROS control.”</p>
-          <span><Icon name="image" size={14} /> optional reference image</span>
-        </div>
-        <div className="flow-beam"><i /><i /><i /></div>
-        <div className="contract-card">
-          <div><Icon name="paper" size={16} /><b>world.plan</b><span>committed</span></div>
-          {['Scene · dense urban grid', 'System · wheeled vehicle', 'Sensors · 3 cameras', 'Gate · route remains clear'].map((item) => <p key={item}><Icon name="check" size={11} />{item}</p>)}
-        </div>
-      </div>
-    )
-  }
-
-  if (active === 1) {
-    return (
-      <div className="build-canvas build-canvas--code stage-enter">
-        <div className="code-window">
-          <div className="code-window__top"><span><i /><i /><i /></span><b>simulation.py</b><small>generated</small></div>
-          <pre><code><span className="code-pink">import</span> pychrono <span className="code-pink">as</span> chrono{`\n`}<span className="code-pink">from</span> world.assets <span className="code-pink">import</span> city{`\n\n`}system = chrono.<span className="code-blue">ChSystemNSC</span>(){`\n`}terrain = city.<span className="code-blue">build_road_network</span>(){`\n`}vehicle = <span className="code-blue">create_vehicle</span>(system){`\n`}sensors.<span className="code-blue">attach_camera_rig</span>(vehicle){`\n\n`}<span className="code-pink">while</span> system.GetChTime() &lt; end_time:{`\n`}    controller.<span className="code-blue">synchronize</span>(system){`\n`}    system.<span className="code-blue">DoStepDynamics</span>(dt)</code></pre>
-          <div className="code-window__status"><span><i /> syntax valid</span><span>842 lines</span></div>
-        </div>
-        <div className="context-stack">
-          <div><Icon name="layers" size={18} /><span><b>Skill library</b><small>simulator patterns</small></span></div>
-          <div><Icon name="database" size={18} /><span><b>Asset catalog</b><small>simulation-ready objects</small></span></div>
-          <div><Icon name="orbit" size={18} /><span><b>Chrono retrieval</b><small>APIs + examples</small></span></div>
-        </div>
-      </div>
-    )
-  }
-
-  if (active === 2) {
-    return (
-      <div className="build-canvas build-canvas--run stage-enter">
-        <video src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline />
-        <div className="run-toolbar"><span><i /> RUNNING</span><b>ros_city_drive</b><span>chase_cam</span></div>
-        <div className="run-stages">
-          {['Static', 'Physics', 'Frame', 'Render'].map((item, index) => <span key={item}><i><Icon name="check" size={10} /></i><b>{item}</b><small>{index === 3 ? 'live' : 'passed'}</small></span>)}
-        </div>
-        <div className="run-time">t <b>07.42</b> s</div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="build-canvas build-canvas--verify stage-enter">
-      <div className="verify-score"><div><span>4 / 4</span></div><h3>World accepted</h3><p>Every declared objective has matching runtime evidence.</p></div>
-      <div className="verify-list">
-        {[
-          ['Scene', 'Required objects present', 'video'],
-          ['Motion', 'Vehicle follows control', 'trajectory'],
-          ['Physics', 'No instability detected', 'diagnostic'],
-          ['Review', 'Objectives satisfied', 'verdict'],
-        ].map(([name, copy, type]) => <div key={name}><i><Icon name="check" size={12} /></i><span><b>{name}</b><small>{copy}</small></span><code>{type}</code></div>)}
-      </div>
-      <div className="verify-seal"><Icon name="shield" size={16} /> EVIDENCE BUNDLE STAMPED</div>
-    </div>
-  )
-}
-
-function BuildFlow() {
-  const [active, setActive] = useState(0)
-  const stage = buildStages[active]
-
-  return (
-    <section className="build-flow section">
-      <div className="shell">
-        <div className="build-flow__heading">
-          <SectionHeading eyebrow="One continuous workflow" title={<>From idea to<br />operating world.</>} />
-          <p data-reveal>A closed construction loop moves from human intent to working simulation—and keeps every artifact visible along the way.</p>
-        </div>
-        <div className="build-system" data-reveal>
-          <div className="build-system__tabs" role="tablist" aria-label="World construction stages">
-            {buildStages.map((item, index) => (
-              <button key={item.id} type="button" role="tab" aria-selected={active === index} className={active === index ? 'is-active' : ''} onClick={() => setActive(index)}>
-                <span>{item.id}</span><b>{item.label}</b><Icon name={item.icon} size={17} />
-              </button>
-            ))}
-          </div>
-          <div className="build-system__body">
-            <div className="build-system__copy" key={stage.id}>
-              <div><Icon name={stage.icon} size={19} /><code>{stage.artifact}</code></div>
-              <h3>{stage.title}</h3>
-              <p>{stage.copy}</p>
-              <div className="stage-progress"><span style={{ width: `${(active + 1) * 25}%` }} /></div>
-              <small>{stage.id} / 04</small>
-            </div>
-            <BuildVisual active={active} />
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function UseCaseMedia({ item }) {
-  if (item.type === 'video') {
-    return <video src={asset(item.media)} poster={item.poster ? asset(item.poster) : undefined} muted loop autoPlay playsInline preload="metadata" />
-  }
-  return <img src={asset(item.media)} alt="" loading="lazy" />
-}
-
-function UseCases() {
-  return (
-    <section className="use-cases section" id="use-cases">
-      <div className="shell">
-        <SectionHeading
-          eyebrow="Built for systems that touch reality"
-          title={<>A proving ground for<br />physical intelligence.</>}
-          copy="Create diverse, measurable environments for autonomy, engineering, and interactive simulation from one agentic workflow."
-        />
-        <div className="use-grid">
-          {useCases.map((item, index) => (
-            <article className={`use-card ${item.className}`} key={item.title} data-reveal style={{ '--card-index': index }}>
-              <div className="use-card__media"><UseCaseMedia item={item} /><div /></div>
-              <div className="use-card__copy">
-                <span>{item.eyebrow}</span>
-                <h3>{item.title}</h3>
-                <p>{item.copy}</p>
-                <div>{item.tags.map((tag) => <small key={tag}>{tag}</small>)}</div>
-              </div>
-              <div className="use-card__index">0{index + 1}</div>
-            </article>
+        <div className="hero__authors" data-reveal>
+          {authors.map((author, index) => (
+            <span key={author.name}>{author.name}{author.equal && <sup>*</sup>}{index < authors.length - 1 ? ',' : ''}</span>
           ))}
         </div>
+        <p className="hero__affiliation" data-reveal>University of Wisconsin–Madison · <sup>*</sup> Equal contribution</p>
+        <div className="hero__links" data-reveal>
+          <ResourceLink href={asset('chronoagentic-paper.pdf')} icon="paper" primary>Paper</ResourceLink>
+          <ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github">Code</ResourceLink>
+          <ResourceLink href="#construction" icon="play">Demos</ResourceLink>
+          <ResourceLink href="#paper" icon="code">Citation</ResourceLink>
+        </div>
+      </div>
+      <a className="hero__scroll" href="#overview"><span>Explore the work</span><i /></a>
+    </section>
+  )
+}
+
+function Overview({ onOpenMedia }) {
+  return (
+    <section className="overview section" id="overview">
+      <div className="shell">
+        <SectionHeading
+          kicker="Overview"
+          title={<>The world is the program.<br />The rollout is the evidence.</>}
+          copy="ChronoAgentic constructs physically grounded worlds as executable PyChrono programs rather than predicting future frames in a latent video state."
+        />
+        <div className="abstract-block" data-reveal>
+          <span>ABSTRACT</span>
+          <div>
+            <p>Video-based world models can produce plausible rollouts, but contacts drift, shapes distort, and motion loses consistency because physical constraints remain implicit. ChronoAgentic makes the world state explicit: bodies, joints, contacts, terrain, sensors, controllers, and numerical integration live in inspectable code.</p>
+            <p>Four context-isolated agents plan, construct, observe, and review each simulation. Runtime logs, trajectories, rendered videos, and deterministic physics checks ground targeted repairs until the executable world is accepted or reported as blocked.</p>
+          </div>
+        </div>
+        <div className="overview-principles" data-reveal>
+          {[
+            ['01', 'Plan', 'Natural language becomes a human-readable scene contract before code is written.'],
+            ['02', 'Execute', 'A standalone PyChrono program advances explicit physical state through time.'],
+            ['03', 'Verify', 'Visual evidence and numerical trajectories must agree before acceptance.'],
+          ].map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
+        </div>
+        <figure className="comparison-figure" data-reveal>
+          <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/comparison.png', alt: 'Video-based world modeling compared with executable simulation', caption: 'Video-based world modeling predicts frames from latent state. ChronoAgentic generates a program that exposes and advances physical state.' })}>
+            <img src={asset('media/comparison.png')} alt="Video-based world modeling compared with executable simulation" loading="lazy" />
+            <span><Icon name="expand" size={16} /> Expand</span>
+          </button>
+          <figcaption><b>Two world representations.</b> Video generation keeps mechanics latent; executable simulation exposes the state that determines what can happen next.</figcaption>
+        </figure>
       </div>
     </section>
   )
 }
 
-function StudioPanel({ tab }) {
-  if (tab === 'physics') {
-    return (
-      <div className="studio-physics panel-enter">
-        <div className="studio-physics__header"><span><i /> LIVE TELEMETRY</span><b>vehicle_state.csv</b><small>1,201 samples</small></div>
-        <div className="studio-chart">
-          <div className="studio-chart__grid" />
-          <svg viewBox="0 0 800 320" preserveAspectRatio="none" aria-hidden="true">
-            <path className="chart-line chart-line--red" d="M0 248 C50 245 80 238 120 214 S190 176 250 169 S350 173 410 139 S490 83 555 104 S650 141 800 70" />
-            <path className="chart-line chart-line--blue" d="M0 205 C75 205 120 195 170 202 S260 225 320 205 S420 159 490 171 S590 220 655 181 S735 141 800 150" />
-            <path className="chart-line chart-line--green" d="M0 277 C90 278 140 276 210 273 S320 265 385 270 S500 278 575 270 S680 260 800 265" />
-          </svg>
-          <span className="chart-label chart-label--one">velocity</span><span className="chart-label chart-label--two">steering</span><span className="chart-label chart-label--three">stability</span>
-        </div>
-        <div className="studio-readouts"><div><small>speed</small><b>8.42 <em>m/s</em></b></div><div><small>yaw rate</small><b>0.13 <em>rad/s</em></b></div><div><small>contacts</small><b>stable</b></div><span><Icon name="check" size={14} /> physics gate passed</span></div>
-      </div>
-    )
-  }
-
-  if (tab === 'lifecycle') {
-    return (
-      <div className="studio-lifecycle panel-enter">
-        {[
-          ['Plan committed', 'Scene, objectives, cameras, and interfaces', '00:00'],
-          ['Program constructed', 'Standalone PyChrono source generated', '00:18'],
-          ['Physics-only passed', 'Stable bounded execution', '00:31'],
-          ['First frame approved', 'Composition and object layout confirmed', '00:46'],
-          ['Full world rendered', 'Three sensor cameras captured', '01:14'],
-          ['Evidence accepted', 'Visual and physical objectives satisfied', '01:27'],
-        ].map(([title, copy, time], index) => (
-          <div className="studio-lifecycle__row" key={title}>
-            <span><Icon name="check" size={12} /></span><div><b>{title}</b><small>{copy}</small></div><time>{time}</time>{index < 5 && <i />}
-          </div>
-        ))}
-      </div>
-    )
-  }
+function SceneShowcase() {
+  const [active, setActive] = useState(0)
+  const scene = constructionScenes[active]
 
   return (
-    <div className="studio-viewport panel-enter">
-      <video src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline />
-      <div className="studio-viewport__top"><span><i /> LIVE SIMULATION</span><b>ros_city_drive / iteration_010</b><span>chase_cam ▾</span></div>
-      <div className="studio-viewport__reticle"><i /><i /></div>
-      <div className="studio-viewport__bottom"><span>CAM 01 · RGB</span><span>t 07.42 s</span><span>60 FPS</span></div>
+    <div className="scene-showcase" data-reveal>
+      <div className="scene-showcase__stage">
+        <video key={scene.video} src={asset(scene.video)} poster={asset(scene.poster)} muted loop autoPlay playsInline preload="metadata" />
+        <div className="scene-showcase__hud"><span><i /> EXECUTED SIMULATION</span><span>{String(active + 1).padStart(2, '0')} / {String(constructionScenes.length).padStart(2, '0')}</span></div>
+        <div className="scene-showcase__caption">
+          <span>PROMPT</span>
+          <p>“{scene.prompt}”</p>
+        </div>
+      </div>
+      <aside className="scene-showcase__aside">
+        <div><span>SELECTED WORLD</span><h3>{scene.name}</h3><p>{scene.systems}</p></div>
+        <dl><dt>Construction</dt><dd>agent-generated code</dd><dt>Runtime</dt><dd>Project Chrono</dd><dt>Artifacts</dt><dd>{scene.detail}</dd></dl>
+        <div className="scene-showcase__selector">
+          {constructionScenes.map((item, index) => (
+            <button key={item.name} type="button" className={active === index ? 'is-active' : ''} onClick={() => setActive(index)}>
+              <img src={asset(item.poster)} alt="" />
+              <span><b>{String(index + 1).padStart(2, '0')}</b>{item.name}</span>
+            </button>
+          ))}
+        </div>
+      </aside>
     </div>
   )
 }
 
-function Studio() {
-  const [tab, setTab] = useState('viewport')
+function Construction({ onOpenMedia }) {
+  const [stage, setStage] = useState(0)
+  const active = pipelineSteps[stage]
+
   return (
-    <section className="studio-section section" id="studio">
-      <div className="studio-section__glow" aria-hidden="true" />
-      <div className="shell">
-        <div className="studio-section__heading">
-          <SectionHeading
-            eyebrow="Chrono Studio"
-            title={<>See the whole world.<br />Not just the final frame.</>}
-            copy="A unified workspace for intent, source, runtime, sensors, telemetry, and review. Follow a world from its first plan to the accepted evidence bundle."
-            light
-          />
-          <ButtonLink href="https://github.com/Hongyu0329/chrono-agentic" tone="light" icon="github">Explore the source</ButtonLink>
+    <section className="construction section" id="construction">
+      <div className="shell-wide">
+        <SectionHeading
+          kicker="World construction"
+          title={<>From an open prompt<br />to a simulation-ready world.</>}
+          copy="The same construction loop spans populated scenes, rigid and deformable mechanics, fluids, lighting, sensors, vehicles, and live ROS interaction."
+        />
+        <SceneShowcase />
+      </div>
+      <div className="shell pipeline-section">
+        <div className="pipeline-section__heading" data-reveal>
+          <div><span>THE CLOSED LOOP</span><h3>Six stages. One inspectable handoff at a time.</h3></div>
+          <p>Every agent writes a persistent artifact for the next role. Failed worlds are patched in place instead of regenerated from scratch.</p>
         </div>
-        <div className="studio-app" data-reveal>
-          <div className="studio-app__chrome">
-            <div className="window-dots"><i /><i /><i /></div>
-            <span><i /> Chrono Studio · live workspace</span>
-            <div><small>PyChrono 10.0</small><Icon name="layers" size={14} /></div>
-          </div>
-          <div className="studio-app__body">
-            <aside className="studio-chat">
-              <div className="studio-label">WORLD BRIEF</div>
-              <div className="studio-message studio-message--user"><span>Y</span><p>Build a driveable city with dense streets, varied buildings, and live ROS control.</p></div>
-              <div className="studio-message studio-message--agent"><span><Icon name="spark" size={13} /></span><div><b>ChronoAgentic</b><p>I’ll commit the scene, vehicle, route-clearance, sensor, and ROS interfaces first.</p></div></div>
-              <div className="studio-artifact"><div><Icon name="paper" size={14} /><b>world.plan</b><span>committed</span></div><small>130 assets · 1 vehicle · 3 cameras</small></div>
-              <div className="studio-agent-state"><i /><i /><i /><span>world is running</span></div>
-            </aside>
-            <div className="studio-main">
-              <div className="studio-tabs" role="tablist" aria-label="Studio views">
-                {[["viewport", "World"], ["physics", "Physics"], ["lifecycle", "Lifecycle"]].map(([id, label]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'is-active' : ''} onClick={() => setTab(id)}>{label}</button>)}
-                <span>run_010 <i /> accepted</span>
-              </div>
-              <StudioPanel tab={tab} />
+        <div className="pipeline-viewer" data-reveal>
+          <button className="pipeline-viewer__figure" type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/pipeline.png', alt: 'ChronoAgentic agent pipeline', caption: 'Planning, code generation, staged execution, visual analysis, physics validation, and targeted repair.' })}>
+            <img src={asset('media/pipeline.png')} alt="ChronoAgentic agent pipeline" loading="lazy" />
+            <span><Icon name="expand" size={15} /> View full pipeline</span>
+          </button>
+          <div className="pipeline-viewer__content">
+            <div className="pipeline-tabs" role="tablist" aria-label="Pipeline stages">
+              {pipelineSteps.map((item, index) => <button key={item.id} type="button" role="tab" aria-selected={stage === index} className={stage === index ? 'is-active' : ''} onClick={() => setStage(index)}><span>{item.id}</span><b>{item.short}</b></button>)}
             </div>
-            <aside className="studio-inspector">
-              <div className="studio-label">RUN HEALTH</div>
-              <div className="health-score"><div><span>4/4</span></div><p><b>All gates passed</b><small>latest iteration</small></p></div>
-              {[
-                ['Scene', 'complete'], ['Physics', 'stable'], ['Sensors', 'captured'], ['Review', 'accepted'],
-              ].map(([name, value]) => <div className="health-row" key={name}><i><Icon name="check" size={10} /></i><b>{name}</b><span>{value}</span></div>)}
-              <div className="health-bundle"><Icon name="shield" size={15} /><span><b>Evidence bundle</b><small>source · video · traces</small></span></div>
-            </aside>
+            <div className="pipeline-copy" key={active.id}>
+              <div><span>{active.agent}</span><code>{active.artifact}</code></div>
+              <h3>{active.title}</h3>
+              <p>{active.copy}</p>
+            </div>
           </div>
-          <div className="studio-app__status"><span><i /> Agent loop closed</span><span>All artifacts synchronized</span></div>
         </div>
       </div>
     </section>
   )
 }
 
-function DemoCard({ demo, index }) {
-  const ref = useRef(null)
+function WorldCard({ demo, index, onOpen }) {
+  const videoRef = useRef(null)
   const [playing, setPlaying] = useState(false)
-  const play = () => ref.current?.play().then(() => setPlaying(true)).catch(() => {})
-  const pause = () => { ref.current?.pause(); setPlaying(false) }
+  const detail = worldDetails[demo.title]
+
+  const play = () => videoRef.current?.play().then(() => setPlaying(true)).catch(() => {})
+  const pause = () => { videoRef.current?.pause(); setPlaying(false) }
 
   return (
-    <article className={`world-card world-card--${index + 1}`} data-reveal onMouseEnter={play} onMouseLeave={pause}>
+    <article className="world-card" data-reveal onMouseEnter={play} onMouseLeave={pause}>
       <div className="world-card__media">
-        <video ref={ref} src={asset(demo.video)} poster={asset(demo.poster)} muted loop playsInline preload="metadata" aria-label={`${demo.title} simulation`} />
-        <div className="world-card__shade" />
-        <button type="button" onClick={() => (playing ? pause() : play())} aria-label={`${playing ? 'Pause' : 'Play'} ${demo.title}`}><Icon name={playing ? 'pause' : 'play'} size={17} /></button>
-        <div className="world-card__state"><i className={playing ? 'is-live' : ''} />{playing ? 'WORLD RUNNING' : 'RUN WORLD'}</div>
+        <video ref={videoRef} src={asset(demo.video)} poster={asset(demo.poster)} muted loop playsInline preload="metadata" />
+        <button type="button" aria-label={`Open ${demo.title}`} onClick={() => onOpen({ type: 'video', src: demo.video, poster: demo.poster, alt: demo.title, caption: detail.prompt })}><Icon name="play" size={18} /></button>
+        <span className="world-card__index">{String(index + 1).padStart(2, '0')}</span>
+        <span className={`world-card__state ${playing ? 'is-playing' : ''}`}><i />{playing ? 'RUNNING' : 'HOVER TO RUN'}</span>
       </div>
-      <div className="world-card__copy"><span>0{index + 1} · {demo.category}</span><h3>{demo.title}</h3><small>{demo.tag}</small></div>
+      <div className="world-card__copy"><span>{detail.domain} · {demo.tag}</span><h3>{demo.title}</h3><p>“{detail.prompt}”</p></div>
     </article>
   )
 }
 
-function Worlds() {
+function Worlds({ onOpenMedia }) {
+  const [filter, setFilter] = useState('All')
+  const filters = ['All', 'Mechanics', 'Fluids', 'Materials & light']
+  const visible = useMemo(() => demos.filter((demo) => filter === 'All' || worldDetails[demo.title].domain === filter), [filter])
+
   return (
     <section className="worlds section" id="worlds">
-      <div className="shell">
-        <div className="worlds__heading">
-          <SectionHeading eyebrow="Generated and executed" title={<>One platform.<br />Many laws of motion.</>} />
-          <div data-reveal><p>Every scene below is a recorded run of generated PyChrono code—not a video model imagining the next frame.</p><span><i /> Hover to run a world</span></div>
-        </div>
-        <div className="world-grid">{demos.map((demo, index) => <DemoCard demo={demo} index={index} key={demo.title} />)}</div>
-        <div className="worlds__more" data-reveal><span>80 evaluated worlds across eight physical categories</span><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">Browse all artifacts <Icon name="external" size={14} /></a></div>
+      <div className="shell-wide">
+        <SectionHeading
+          kicker="Open-vocabulary physical simulation"
+          title={<>Many scenes.<br />Many kinds of physics.</>}
+          copy="Each video is rendered by the simulator from an agent-generated program. Select a domain, hover to run, or open any world full-screen."
+        />
+        <div className="world-filters" data-reveal>{filters.map((item) => <button key={item} type="button" className={filter === item ? 'is-active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div>
+        <div className="world-grid">{visible.map((demo, index) => <WorldCard key={demo.title} demo={demo} index={demos.indexOf(demo)} onOpen={onOpenMedia} />)}</div>
       </div>
     </section>
   )
 }
 
-function Proof() {
+function Interaction({ onOpenMedia }) {
   return (
-    <section className="proof section">
+    <section className="interaction section" id="interaction">
       <div className="shell">
         <SectionHeading
-          eyebrow="Measured, not merely watched"
-          title={<>Built to be checked.<br />Designed to improve.</>}
-          copy="A world is accepted only when its meaning and its motion both satisfy the declared objectives. The benchmark stays outside the repair loop."
-          center
+          kicker="Interactive simulation"
+          title={<>Generated worlds<br />can keep running.</>}
+          copy="The construction loop extends beyond benchmark clips to a large, asset-rich city connected to a live ROS driving environment."
+          light
         />
-        <div className="proof-stats" data-reveal>
-          <div className="proof-stat proof-stat--primary"><small>Full correctness</small><strong><AnimatedMetric value={82.5} suffix="%" decimals={1} /></strong><p>semantic adherence and physical correctness together</p></div>
-          <div className="proof-stat"><small>Worlds evaluated</small><strong><AnimatedMetric value={80} /></strong><p>across eight distinct physics categories</p></div>
-          <div className="proof-stat"><small>Physical criteria passed</small><strong><AnimatedMetric value={135} /><em>/146</em></strong><p>scenario-specific standards satisfied</p></div>
-          <div className="proof-stat"><small>Strongest baseline margin</small><strong>+<AnimatedMetric value={30} decimals={1} /></strong><p>percentage points in full correctness</p></div>
-        </div>
-        <div className="proof-bar" data-reveal>
-          <div><span>ChronoAgentic</span><i><b style={{ width: '82.5%' }} /></i><strong>82.5</strong></div>
-          <div><span>Strongest video baseline</span><i><b style={{ width: '52.5%' }} /></i><strong>52.5</strong></div>
-          <p><Icon name="shield" size={15} /> Full correctness on the matched 80-prompt PhyWorldBench evaluation.</p>
+      </div>
+      <div className="shell-wide interaction-film" data-reveal>
+        <video src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline preload="metadata" />
+        <div className="interaction-film__top"><span><i /> ROS WORLD ONLINE</span><span>CHRONO SENSOR · CHASE CAMERA</span></div>
+        <div className="interaction-film__caption"><span>BEYOND THE BENCHMARK</span><h3>A driveable world with 130 assets, live control, multiple cameras, and collision-aware streets.</h3></div>
+      </div>
+      <div className="shell interaction-details">
+        <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/ros-city.png', alt: 'ROS city cameras and views', caption: 'The generated city supports live vehicle control, sensor cameras, and ROS-connected interaction.' })} data-reveal>
+          <img src={asset('media/ros-city.png')} alt="ROS city cameras and views" loading="lazy" /><span><Icon name="expand" size={15} /> Multi-camera ROS world</span>
+        </button>
+        <div className="interaction-details__copy" data-reveal>
+          {[
+            ['01', 'Control', 'Drive the generated vehicle through a live ROS interface.'],
+            ['02', 'Observe', 'Read synchronized camera streams and simulator telemetry.'],
+            ['03', 'Interact', 'Keep collision, terrain, and vehicle dynamics active over time.'],
+          ].map(([number, title, copy]) => <article key={number}><span>{number}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}
         </div>
       </div>
     </section>
   )
 }
 
-function Technology({ onOpenFigure }) {
+function SimulationReady({ onOpenMedia }) {
+  return (
+    <section className="simulation-ready section">
+      <div className="shell">
+        <SectionHeading
+          kicker="Simulation-ready programs"
+          title={<>Inspectable before,<br />during, and after execution.</>}
+          copy="The result is not only a rendered clip. Source code, simulator state, trajectory diagnostics, visual observations, and the final verdict remain separate, replayable artifacts."
+        />
+        <div className="ready-layout">
+          <button className="ready-layout__figure" type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/iteration-loop.png', alt: 'Evidence-driven iteration loop', caption: 'Review combines simulation data and camera evidence, then returns one grounded repair to the code agent.' })} data-reveal>
+            <img src={asset('media/iteration-loop.png')} alt="Evidence-driven iteration loop" loading="lazy" />
+            <span><Icon name="expand" size={15} /> Evidence-driven iteration</span>
+          </button>
+          <div className="ready-layout__steps" data-reveal>
+            {[
+              ['Source', 'The delivered Python program explicitly defines geometry, constraints, controllers, sensors, and numerical settings.', 'simulation.py'],
+              ['Execution', 'Physics-only, first-frame, and full-render passes expose failures before expensive rollout generation.', 'run artifacts'],
+              ['Evidence', 'Visual descriptions and deterministic trajectory checks are triangulated against the committed plan.', 'review verdict'],
+            ].map(([title, copy, artifact], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{copy}</p><code>{artifact}</code></article>)}
+          </div>
+        </div>
+        <div className="repair-example" data-reveal>
+          <div><span>REPAIR IN PRACTICE</span><h3>One grounded defect. One targeted patch.</h3><p>Wrong orientation and unstable placement are reported with visual and trajectory evidence, then repaired in the same program.</p></div>
+          <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/dining-repair.png', alt: 'Dining room repair sequence', caption: 'An asset-rich dining scene converges through evidence-grounded repairs.' })}><img src={asset('media/dining-repair.png')} alt="Dining room repair sequence" loading="lazy" /><span><Icon name="expand" size={15} /></span></button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CategoryBars({ metric }) {
+  const label = metric === 'joint' ? 'Full correctness' : metric === 'sa' ? 'Semantic adherence' : 'Physical correctness'
+  return (
+    <div className="category-chart" aria-label={`${label} by physics category`}>
+      <div className="category-chart__scale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
+      {categoryResults.map((row) => <div className="category-row" key={row.name}><span>{row.name}</span><div><i style={{ width: `${row[metric]}%` }} /><b>{row[metric]}%</b></div></div>)}
+    </div>
+  )
+}
+
+function Evaluation({ onOpenMedia }) {
+  const [metric, setMetric] = useState('joint')
+  const comparison = baselines.slice(0, 4)
+
+  return (
+    <section className="evaluation section" id="evaluation">
+      <div className="shell">
+        <SectionHeading
+          kicker="PhyWorldBench · 80 demos · 8 categories"
+          title={<>Does the world look right<br /><em>and</em> behave right?</>}
+          copy="Each rollout is scored over the full video for semantic adherence and scenario-specific physical correctness. Benchmark verdicts never enter the repair loop."
+        />
+        <div className="evaluation-numbers" data-reveal>
+          <article><strong><AnimatedMetric value={82.5} suffix="%" decimals={1} /></strong><span>Full correctness</span><p>semantic adherence ∧ physical correctness</p></article>
+          <article><strong><AnimatedMetric value={93.8} suffix="%" decimals={1} /></strong><span>Semantic adherence</span><p>required objects and event present</p></article>
+          <article><strong><AnimatedMetric value={88.8} suffix="%" decimals={1} /></strong><span>Physical correctness</span><p>all key physical standards hold</p></article>
+          <article><strong><AnimatedMetric value={135} /><em>/146</em></strong><span>Criteria satisfied</span><p>individual physical standards passed</p></article>
+        </div>
+        <div className="evaluation-grid">
+          <div className="evaluation-panel" data-reveal>
+            <div className="evaluation-panel__head"><div><span>CATEGORY ANALYSIS</span><h3>Correctness across physical phenomena</h3></div><div>{[['joint', 'Full'], ['sa', 'Semantic'], ['pc', 'Physical']].map(([id, label]) => <button key={id} type="button" className={metric === id ? 'is-active' : ''} onClick={() => setMetric(id)}>{label}</button>)}</div></div>
+            <CategoryBars metric={metric} />
+          </div>
+          <div className="evaluation-panel evaluation-panel--baseline" data-reveal>
+            <div className="evaluation-panel__head"><div><span>MATCHED COMPARISON</span><h3>Full correctness</h3></div><small>%</small></div>
+            <div className="baseline-list">{comparison.map((item) => <div className={item.ours ? 'is-ours' : ''} key={item.name}><span>{item.name}{item.ours && <b>ours</b>}</span><i><em style={{ width: `${item.value}%` }} /></i><strong>{item.value.toFixed(1)}</strong></div>)}</div>
+            <p><b>+30.0 pp</b> over the strongest of ten text-to-video baselines under the same full-video judging protocol.</p>
+          </div>
+        </div>
+        <figure className="benchmark-worlds" data-reveal>
+          <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/pwb-grid.png', alt: 'Accepted worlds across PhyWorldBench categories', caption: 'Accepted ChronoAgentic simulations across all eight evaluated physics categories. Time advances from left to right.' })}><img src={asset('media/pwb-grid.png')} alt="Accepted worlds across PhyWorldBench categories" loading="lazy" /><span><Icon name="expand" size={15} /> Expand results</span></button>
+          <figcaption>Accepted simulations across all eight evaluated physics categories. Time advances from left to right.</figcaption>
+        </figure>
+      </div>
+    </section>
+  )
+}
+
+function Paper() {
   const [copied, setCopied] = useState(false)
   const copyCitation = async () => {
     try {
       await navigator.clipboard.writeText(citation)
       setCopied(true)
-      window.setTimeout(() => setCopied(false), 1600)
+      window.setTimeout(() => setCopied(false), 1800)
     } catch {
       setCopied(false)
     }
   }
 
   return (
-    <section className="technology section" id="technology">
+    <section className="paper section" id="paper">
       <div className="shell">
-        <div className="technology__heading">
-          <SectionHeading eyebrow="The engine underneath" title={<>Open artifacts.<br />Explicit architecture.</>} copy="The platform combines specialized agents, simulator knowledge, reusable assets, staged execution, and multimodal verification around one physics runtime." />
-          <ButtonLink href={asset('chronoagentic-paper.pdf')} icon="paper" tone="outline">Read the technical paper</ButtonLink>
-        </div>
-        <div className="architecture-grid">
-          <button className="architecture-visual" type="button" onClick={() => onOpenFigure({ src: 'media/pipeline.png', alt: 'ChronoAgentic system architecture', caption: 'ChronoAgentic system architecture: planning, construction, staged execution, observation, review, and repair.' })} data-reveal>
-            <img src={asset('media/pipeline.png')} alt="ChronoAgentic system architecture" loading="lazy" />
-            <span><Icon name="expand" size={16} /> View architecture</span>
-          </button>
-          <div className="architecture-copy" data-reveal>
-            {[
-              ['01', 'Context-isolated agents', 'Planning, coding, visual analysis, and review each operate through inspectable handoffs.'],
-              ['02', 'Simulator-native intelligence', 'Curated skills and retrieval ground construction in real PyChrono APIs and working patterns.'],
-              ['03', 'Reusable world assets', 'Native platforms, catalog objects, and generated meshes share explicit simulation metadata.'],
-              ['04', 'Staged execution gates', 'Static, physics-only, first-frame, and full-render checks spend compute where it matters.'],
-            ].map(([num, title, copy]) => <div key={num}><span>{num}</span><section><h3>{title}</h3><p>{copy}</p></section></div>)}
+        <SectionHeading kicker="Paper & artifacts" title={<>Read the paper.<br />Replay the worlds.</>} copy="The source repository contains the construction workflow and inspectable artifacts; the paper documents the method, evaluation protocol, and limitations." light />
+        <div className="paper-layout">
+          <div className="paper-sheet" data-reveal>
+            <span>PREPRINT · 2026</span>
+            <h3>ChronoAgentic: A Code-based Multi-Agent World Simulator for Physically Grounded Simulation Construction</h3>
+            <p>{authors.map((author) => author.name).join(' · ')}</p>
+            <img src={asset('media/pipeline.png')} alt="ChronoAgentic pipeline preview" loading="lazy" />
+          </div>
+          <div className="paper-resources" data-reveal>
+            <div className="paper-resources__links"><ResourceLink href={asset('chronoagentic-paper.pdf')} icon="paper" primary>Download PDF</ResourceLink><ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github">Source & artifacts</ResourceLink><ResourceLink href="https://projectchrono.org/" icon="external">Project Chrono</ResourceLink></div>
+            <div className="citation-box"><div><span><Icon name="code" size={15} /> BIBTEX</span><button type="button" onClick={copyCitation}><Icon name={copied ? 'check' : 'copy'} size={14} />{copied ? 'Copied' : 'Copy'}</button></div><pre><code>{citation}</code></pre></div>
           </div>
         </div>
-
-        <div className="domain-matrix" data-reveal>
-          <div><span>PHYSICS COVERAGE</span><h3>One construction layer across the Chrono ecosystem.</h3></div>
-          <div className="domain-matrix__grid">{capabilities.map(([name, copy]) => <article key={name}><Icon name="orbit" size={18} /><b>{name}</b><p>{copy}</p></article>)}</div>
-        </div>
-
-        <div className="research-resource" data-reveal>
-          <div className="research-resource__label"><span>RESEARCH & OPEN SOURCE</span><i /></div>
-          <div className="research-resource__main">
-            <div>
-              <h3>ChronoAgentic</h3>
-              <p>A Code-based Multi-Agent World Simulator for Physically Grounded Simulation Construction</p>
-              <small>{authors.map((author) => author.name).join(' · ')}</small>
-            </div>
-            <div className="research-resource__actions">
-              <ButtonLink href={asset('chronoagentic-paper.pdf')} icon="paper" tone="paper">Paper PDF</ButtonLink>
-              <ButtonLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github" tone="paper">Source code</ButtonLink>
-              <button type="button" onClick={copyCitation}><Icon name={copied ? 'check' : 'copy'} size={15} />{copied ? 'Copied' : 'Copy citation'}</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function FinalCTA() {
-  return (
-    <section className="final-cta">
-      <div className="final-cta__orb" aria-hidden="true"><i /><i /></div>
-      <div className="shell final-cta__content" data-reveal>
-        <span>THE WORLD IS THE OUTPUT</span>
-        <h2>Describe it.<br /><em>Watch it run.</em></h2>
-        <p>Build executable, inspectable worlds for physical AI and engineering with ChronoAgentic.</p>
-        <div><ButtonLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github" tone="white">Start building</ButtonLink><ButtonLink href={asset('chronoagentic-paper.pdf')} icon="paper" tone="ghost">Read the paper</ButtonLink></div>
       </div>
     </section>
   )
@@ -777,23 +551,15 @@ function FinalCTA() {
 function Footer() {
   return (
     <footer className="footer">
-      <div className="shell footer__top">
-        <div className="footer__brand"><Wordmark inverse /><p>Executable worlds for<br />physical intelligence.</p></div>
-        <div className="footer__links">
-          <div><span>Platform</span><a href="#platform">Overview</a><a href="#use-cases">Use cases</a><a href="#studio">Chrono Studio</a><a href="#worlds">Worlds</a></div>
-          <div><span>Resources</span><a href={asset('chronoagentic-paper.pdf')}>Technical paper</a><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://projectchrono.org/" target="_blank" rel="noreferrer">Project Chrono</a></div>
-          <div><span>Created at</span><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a><a href="https://www.wisc.edu/" target="_blank" rel="noreferrer">University of Wisconsin</a></div>
-        </div>
-      </div>
-      <div className="shell footer__bottom"><span>© 2026 ChronoAgentic</span><span>Open research · executable artifacts</span><a href="#top">Back to top ↑</a></div>
-      <div className="footer__massive" aria-hidden="true">CHRONOAGENTIC</div>
+      <div className="shell footer__main"><Brand /><p>Executable worlds for physically grounded simulation construction.</p><div><a href={asset('chronoagentic-paper.pdf')}>Paper</a><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
+      <div className="shell footer__bottom"><span>ChronoAgentic · 2026</span><span>University of Wisconsin–Madison</span><a href="#top">Back to top ↑</a></div>
     </footer>
   )
 }
 
-function FigureModal({ figure, onClose }) {
+function MediaModal({ media, onClose }) {
   useEffect(() => {
-    if (!figure) return undefined
+    if (!media) return undefined
     const close = (event) => { if (event.key === 'Escape') onClose() }
     document.body.classList.add('modal-open')
     window.addEventListener('keydown', close)
@@ -801,43 +567,42 @@ function FigureModal({ figure, onClose }) {
       document.body.classList.remove('modal-open')
       window.removeEventListener('keydown', close)
     }
-  }, [figure, onClose])
+  }, [media, onClose])
 
-  if (!figure) return null
+  if (!media) return null
   return (
-    <div className="figure-modal" role="dialog" aria-modal="true" aria-label={figure.caption} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <div className="figure-modal__panel">
-        <button type="button" onClick={onClose} aria-label="Close image"><Icon name="close" size={20} /></button>
-        <img src={asset(figure.src)} alt={figure.alt} />
-        <p>{figure.caption}</p>
+    <div className="media-modal" role="dialog" aria-modal="true" aria-label={media.caption} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <div className={`media-modal__panel media-modal__panel--${media.type}`}>
+        <button type="button" onClick={onClose} aria-label="Close"><Icon name="close" size={20} /></button>
+        {media.type === 'video'
+          ? <video src={asset(media.src)} poster={media.poster ? asset(media.poster) : undefined} controls autoPlay muted loop playsInline />
+          : <img src={asset(media.src)} alt={media.alt} />}
+        <p>{media.caption}</p>
       </div>
     </div>
   )
 }
 
 export default function App() {
-  const [activeSection, setActiveSection] = useState('platform')
-  const [figure, setFigure] = useState(null)
+  const [activeSection, setActiveSection] = useState('overview')
+  const [media, setMedia] = useState(null)
   usePageEffects(setActiveSection)
 
   return (
     <>
-      <div className="pointer-glow" aria-hidden="true" />
       <Navigation activeSection={activeSection} />
       <main>
         <Hero />
-        <CapabilityRail />
-        <PlatformIntro />
-        <BuildFlow />
-        <UseCases />
-        <Studio />
-        <Worlds />
-        <Proof />
-        <Technology onOpenFigure={setFigure} />
-        <FinalCTA />
+        <Overview onOpenMedia={setMedia} />
+        <Construction onOpenMedia={setMedia} />
+        <Worlds onOpenMedia={setMedia} />
+        <Interaction onOpenMedia={setMedia} />
+        <SimulationReady onOpenMedia={setMedia} />
+        <Evaluation onOpenMedia={setMedia} />
+        <Paper />
       </main>
       <Footer />
-      <FigureModal figure={figure} onClose={() => setFigure(null)} />
+      <MediaModal media={media} onClose={() => setMedia(null)} />
     </>
   )
 }
