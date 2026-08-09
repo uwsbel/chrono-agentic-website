@@ -87,12 +87,23 @@ export const baselines = [
 
 export const demos = [
   {
+    title: 'FloWave focused-wave pool',
+    category: 'Fluid and particle dynamics',
+    tag: 'SPH · 1,023,648 particles',
+    video: 'media/demo-flowave-pool.mp4',
+    poster: 'media/poster-flowave-pool.jpg',
+    accent: '#1794b8',
+    evidence: 'Pipeline accepted · numerical checks passed',
+    featured: true,
+  },
+  {
     title: 'A stone enters still water',
     category: 'Fluid–solid interaction',
     tag: 'SPH · Contact',
     video: 'media/demo-stone-pond.mp4',
     poster: 'media/poster-stone-pond.jpg',
     accent: '#168c86',
+    evidence: 'PhyWorldBench · semantic + physics pass',
   },
   {
     title: 'Wind drives a field mechanism',
@@ -101,6 +112,7 @@ export const demos = [
     video: 'media/demo-windmill.mp4',
     poster: 'media/poster-windmill.jpg',
     accent: '#bd5d36',
+    evidence: 'PhyWorldBench · semantic + physics pass',
   },
   {
     title: 'Energy in a pendulum',
@@ -109,14 +121,7 @@ export const demos = [
     video: 'media/demo-pendulum.mp4',
     poster: 'media/poster-pendulum.jpg',
     accent: '#6959bd',
-  },
-  {
-    title: 'Light falls on a vase',
-    category: 'Sensor simulation',
-    tag: 'OptiX · Shadows',
-    video: 'media/demo-light-vase.mp4',
-    poster: 'media/poster-light-vase.jpg',
-    accent: '#b58a1d',
+    evidence: 'PhyWorldBench · semantic + physics pass',
   },
   {
     title: 'A spring stores and releases',
@@ -125,6 +130,7 @@ export const demos = [
     video: 'media/demo-spring.mp4',
     poster: 'media/poster-spring.jpg',
     accent: '#3e72b8',
+    evidence: 'PhyWorldBench · semantic + physics pass',
   },
   {
     title: 'A beach ball meets a pool',
@@ -133,6 +139,7 @@ export const demos = [
     video: 'media/demo-beach-ball.mp4',
     poster: 'media/poster-beach-ball.jpg',
     accent: '#d05b63',
+    evidence: 'PhyWorldBench · semantic + physics pass',
   },
 ]
 
@@ -165,12 +172,3 @@ export const capabilities = [
   ['Optical sensors', 'Headless camera, lidar, light and shadow'],
   ['ROS worlds', 'Interactive control and live telemetry'],
 ]
-
-export const citation = `@misc{wang2026chronoagentic,
-  title   = {ChronoAgentic: A Code-based Multi-Agent World
-             Simulator for Physically Grounded Simulation Construction},
-  author  = {Wang, Hongyu and Wang, Jingquan and Anilkumar, Ashvin
-             and Zou, Bocheng and Serban, Radu and Negrut, Dan},
-  year    = {2026},
-  note    = {Preprint}
-}`

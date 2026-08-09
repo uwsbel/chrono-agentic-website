@@ -4,7 +4,6 @@ import {
   authors,
   baselines,
   categoryResults,
-  citation,
   demos,
   pipelineSteps,
 } from './data.js'
@@ -22,7 +21,6 @@ const navItems = [
   ['worlds', 'Worlds'],
   ['interaction', 'Interaction'],
   ['evaluation', 'Evaluation'],
-  ['paper', 'Paper'],
 ]
 
 const constructionScenes = [
@@ -61,6 +59,10 @@ const constructionScenes = [
 ]
 
 const worldDetails = {
+  'FloWave focused-wave pool': {
+    domain: 'Fluids',
+    prompt: 'A circular ring of hinged paddles drives inward waves that focus into a central free-surface spike.',
+  },
   'A stone enters still water': {
     domain: 'Fluids',
     prompt: 'A stone is dropped into a still pond, creating a splash and outward-propagating waves.',
@@ -73,12 +75,8 @@ const worldDetails = {
     domain: 'Mechanics',
     prompt: 'A pendulum swings between two peaks while exchanging potential and kinetic energy.',
   },
-  'Light falls on a vase': {
-    domain: 'Materials & light',
-    prompt: 'A light source illuminates a vase and casts a geometrically consistent shadow.',
-  },
   'A spring stores and releases': {
-    domain: 'Materials & light',
+    domain: 'Deformables',
     prompt: 'An elastic spring deforms, stores energy, and returns toward its resting configuration.',
   },
   'A beach ball meets a pool': {
@@ -239,7 +237,7 @@ function Hero() {
       <video className="hero__video" src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline preload="auto" aria-label="ChronoAgentic generated ROS city simulation" />
       <div className="hero__veil" />
       <div className="hero__content shell">
-        <div className="hero__venue" data-reveal><i /> 2026 PREPRINT <i /></div>
+        <div className="hero__venue" data-reveal><i /> RESEARCH PREVIEW · 2026 <i /></div>
         <h1 data-reveal>
           <span className="hero__name">ChronoAgentic:</span>
           <span>A Code-based Multi-Agent World Simulator for Physically Grounded Simulation Construction</span>
@@ -251,10 +249,9 @@ function Hero() {
         </div>
         <p className="hero__affiliation" data-reveal>University of Wisconsin–Madison · <sup>*</sup> Equal contribution</p>
         <div className="hero__links" data-reveal>
-          <ResourceLink href={asset('chronoagentic-paper.pdf')} icon="paper" primary>Paper</ResourceLink>
-          <ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github">Code</ResourceLink>
-          <ResourceLink href="#construction" icon="play">Demos</ResourceLink>
-          <ResourceLink href="#paper" icon="code">Citation</ResourceLink>
+          <ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github" primary>Code</ResourceLink>
+          <ResourceLink href="#worlds" icon="play">Verified demos</ResourceLink>
+          <ResourceLink href="#construction" icon="code">Pipeline</ResourceLink>
         </div>
       </div>
       <a className="hero__scroll" href="#overview"><span>Explore the work</span><i /></a>
@@ -376,30 +373,35 @@ function WorldCard({ demo, index, onOpen }) {
   const pause = () => { videoRef.current?.pause(); setPlaying(false) }
 
   return (
-    <article className="world-card" data-reveal onMouseEnter={play} onMouseLeave={pause}>
+    <article className={`world-card ${demo.featured ? 'world-card--featured' : ''}`} data-reveal onMouseEnter={play} onMouseLeave={pause}>
       <div className="world-card__media">
         <video ref={videoRef} src={asset(demo.video)} poster={asset(demo.poster)} muted loop playsInline preload="metadata" />
         <button type="button" aria-label={`Open ${demo.title}`} onClick={() => onOpen({ type: 'video', src: demo.video, poster: demo.poster, alt: demo.title, caption: detail.prompt })}><Icon name="play" size={18} /></button>
         <span className="world-card__index">{String(index + 1).padStart(2, '0')}</span>
         <span className={`world-card__state ${playing ? 'is-playing' : ''}`}><i />{playing ? 'RUNNING' : 'HOVER TO RUN'}</span>
       </div>
-      <div className="world-card__copy"><span>{detail.domain} · {demo.tag}</span><h3>{demo.title}</h3><p>“{detail.prompt}”</p></div>
+      <div className="world-card__copy">
+        <span>{detail.domain} · {demo.tag}</span>
+        <h3>{demo.title}</h3>
+        <p>“{detail.prompt}”</p>
+        <small><i />{demo.evidence}</small>
+      </div>
     </article>
   )
 }
 
 function Worlds({ onOpenMedia }) {
   const [filter, setFilter] = useState('All')
-  const filters = ['All', 'Mechanics', 'Fluids', 'Materials & light']
+  const filters = ['All', 'Mechanics', 'Fluids', 'Deformables']
   const visible = useMemo(() => demos.filter((demo) => filter === 'All' || worldDetails[demo.title].domain === filter), [filter])
 
   return (
     <section className="worlds section" id="worlds">
       <div className="shell-wide">
         <SectionHeading
-          kicker="Open-vocabulary physical simulation"
-          title={<>Many scenes.<br />Many kinds of physics.</>}
-          copy="Each video is rendered by the simulator from an agent-generated program. Select a domain, hover to run, or open any world full-screen."
+          kicker="Solver-executed worlds"
+          title={<>Real state.<br />Visible physics.</>}
+          copy="Only accepted simulator rollouts are shown here—no text-to-video baselines and no failed PhyWorld cases. Every clip comes from executable Chrono/PyChrono state with physical checks."
         />
         <div className="world-filters" data-reveal>{filters.map((item) => <button key={item} type="button" className={filter === item ? 'is-active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div>
         <div className="world-grid">{visible.map((demo, index) => <WorldCard key={demo.title} demo={demo} index={demos.indexOf(demo)} onOpen={onOpenMedia} />)}</div>
@@ -519,43 +521,10 @@ function Evaluation({ onOpenMedia }) {
   )
 }
 
-function Paper() {
-  const [copied, setCopied] = useState(false)
-  const copyCitation = async () => {
-    try {
-      await navigator.clipboard.writeText(citation)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 1800)
-    } catch {
-      setCopied(false)
-    }
-  }
-
-  return (
-    <section className="paper section" id="paper">
-      <div className="shell">
-        <SectionHeading kicker="Paper & artifacts" title={<>Read the paper.<br />Replay the worlds.</>} copy="The source repository contains the construction workflow and inspectable artifacts; the paper documents the method, evaluation protocol, and limitations." light />
-        <div className="paper-layout">
-          <div className="paper-sheet" data-reveal>
-            <span>PREPRINT · 2026</span>
-            <h3>ChronoAgentic: A Code-based Multi-Agent World Simulator for Physically Grounded Simulation Construction</h3>
-            <p>{authors.map((author) => author.name).join(' · ')}</p>
-            <img src={asset('media/pipeline.png')} alt="ChronoAgentic pipeline preview" loading="lazy" />
-          </div>
-          <div className="paper-resources" data-reveal>
-            <div className="paper-resources__links"><ResourceLink href={asset('chronoagentic-paper.pdf')} icon="paper" primary>Download PDF</ResourceLink><ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github">Source & artifacts</ResourceLink><ResourceLink href="https://projectchrono.org/" icon="external">Project Chrono</ResourceLink></div>
-            <div className="citation-box"><div><span><Icon name="code" size={15} /> BIBTEX</span><button type="button" onClick={copyCitation}><Icon name={copied ? 'check' : 'copy'} size={14} />{copied ? 'Copied' : 'Copy'}</button></div><pre><code>{citation}</code></pre></div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 function Footer() {
   return (
     <footer className="footer">
-      <div className="shell footer__main"><a className="footer__project" href="#top">Chrono<span>Agentic</span></a><p>Executable worlds for physically grounded simulation construction.</p><div><a href={asset('chronoagentic-paper.pdf')}>Paper</a><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
+      <div className="shell footer__main"><a className="footer__project" href="#top">Chrono<span>Agentic</span></a><p>Executable worlds for physically grounded simulation construction.</p><div><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://projectchrono.org/" target="_blank" rel="noreferrer">Project Chrono</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
       <div className="shell footer__bottom"><span>ChronoAgentic · 2026</span><span>University of Wisconsin–Madison</span><a href="#top">Back to top ↑</a></div>
     </footer>
   )
@@ -603,7 +572,6 @@ export default function App() {
         <Interaction onOpenMedia={setMedia} />
         <SimulationReady onOpenMedia={setMedia} />
         <Evaluation onOpenMedia={setMedia} />
-        <Paper />
       </main>
       <Footer />
       <MediaModal media={media} onClose={() => setMedia(null)} />
