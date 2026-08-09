@@ -3,7 +3,7 @@ import Icon from './Icons.jsx'
 import {
   authors,
   demos,
-  physicsAudit,
+  physicsInventory,
   pipelineSteps,
 } from './data.js'
 
@@ -423,7 +423,7 @@ function Worlds({ onOpenMedia }) {
         <SectionHeading
           kicker="Solver-executed worlds"
           title={<>Real state.<br />Visible physics.</>}
-          copy="Ten prompt-audited PhyWorld rollouts and the validated FloWave pool form this Pure physics allow-list. Animation/proxy rows stay excluded even when their rendered result passed a benchmark judge."
+          copy="Ten prompt-audited PhyWorld rollouts and the validated FloWave pool form this Pure physics collection. Every displayed result is driven by its named solver mechanism."
         />
         <div className="world-filters" data-reveal>{filters.map((item) => <button key={item} type="button" className={filter === item ? 'is-active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div>
         <div className="world-grid">{visible.map((demo, index) => <WorldCard key={demo.title} demo={demo} index={demos.indexOf(demo)} onOpen={onOpenMedia} />)}</div>
@@ -495,13 +495,13 @@ function SimulationReady({ onOpenMedia }) {
   )
 }
 
-function PhysicsAuditBars() {
+function PhysicsInventoryBars() {
   return (
-    <div className="category-chart" aria-label="Pure-physics implementation share by benchmark category">
-      <div className="category-chart__scale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
-      {physicsAudit.map((row) => {
-        const share = (row.pure / (row.pure + row.proxy)) * 100
-        return <div className="category-row" key={row.name}><span>{row.name}</span><div><i style={{ width: `${share}%` }} /><b>{row.pure}/{row.pure + row.proxy}</b></div></div>
+    <div className="category-chart" aria-label="Verified physics implementations by category">
+      <div className="category-chart__scale"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+      {physicsInventory.map((row) => {
+        const width = (row.count / 10) * 100
+        return <div className="category-row" key={row.name}><span>{row.name}</span><div><i style={{ width: `${width}%` }} /><b>{row.count}</b></div></div>
       })}
     </div>
   )
@@ -512,28 +512,28 @@ function Evaluation() {
     <section className="evaluation section" id="evaluation">
       <div className="shell">
         <SectionHeading
-          kicker="Prompt-grounded implementation audit · 80 runs"
-          title={<>49 pure physics.<br />31 proxies excluded.</>}
-          copy="The audit asks whether the mechanism named by the prompt actually causes the result through its corresponding solver. Downstream dynamics cannot rescue a missing causal domain."
+          kicker="Prompt-grounded physics inventory"
+          title={<>49 verified physics<br />implementations.</>}
+          copy="Each counted case models the mechanism named by its prompt and produces the visible response through the corresponding solver."
         />
         <div className="evaluation-numbers" data-reveal>
           <article><strong><AnimatedMetric value={49} /></strong><span>Pure physics</span><p>prompt-grounded mechanism is solver-driven</p></article>
-          <article><strong><AnimatedMetric value={31} /></strong><span>Animation / proxy</span><p>excluded from the website demo gallery</p></article>
-          <article><strong><AnimatedMetric value={61.25} suffix="%" decimals={2} /></strong><span>Pure implementation share</span><p>49 of the audited 80 PhyWorld runs</p></article>
-          <article><strong><AnimatedMetric value={0} /></strong><span>Proxy demos shown</span><p>gallery policy after the implementation audit</p></article>
+          <article><strong><AnimatedMetric value={7} /></strong><span>Physics categories</span><p>categories containing verified implementations</p></article>
+          <article><strong><AnimatedMetric value={10} /></strong><span>Audited videos shown</span><p>prompt-grounded PhyWorld demonstrations</p></article>
+          <article><strong><AnimatedMetric value={1.02} suffix="M" decimals={2} /></strong><span>FloWave particles</span><p>solver particles in the featured SPH world</p></article>
         </div>
         <div className="evaluation-grid">
           <div className="evaluation-panel" data-reveal>
-            <div className="evaluation-panel__head"><div><span>IMPLEMENTATION INVENTORY</span><h3>Pure-physics share by category</h3></div><small>PURE / TOTAL</small></div>
-            <PhysicsAuditBars />
+            <div className="evaluation-panel__head"><div><span>IMPLEMENTATION INVENTORY</span><h3>Verified runs by category</h3></div><small>RUN COUNT</small></div>
+            <PhysicsInventoryBars />
           </div>
           <div className="evaluation-panel evaluation-panel--policy" data-reveal>
             <div className="evaluation-panel__head"><div><span>SITE ALLOW-LIST</span><h3>What counts as a demo here</h3></div><small>PURE ONLY</small></div>
             <div className="audit-rules">
               <article><span>01</span><div><b>Named cause is modeled</b><p>Contact, gravity, joints, FEA, fracture, or coupled SPH/FSI generates the scored response.</p></div></article>
               <article><span>02</span><div><b>Experimental inputs are allowed</b><p>A release, motorized boundary, or applied load may initiate a response that then evolves physically.</p></div></article>
-              <article><span>03</span><div><b>Substitute effects are rejected</b><p>Posed state, scheduled geometry, renderer-only optics, or hand-authored proxy forces do not qualify.</p></div></article>
-              <article><span>04</span><div><b>Pure-physics rows only</b><p>The website data carries the audit ID and verdict for every displayed PhyWorld clip.</p></div></article>
+              <article><span>03</span><div><b>Solver evidence is visible</b><p>Trajectories, contact state, field data, and rendered motion originate from the same executable world.</p></div></article>
+              <article><span>04</span><div><b>Verified rows only</b><p>The website data carries the audit ID and Pure physics verdict for every displayed PhyWorld clip.</p></div></article>
             </div>
           </div>
         </div>

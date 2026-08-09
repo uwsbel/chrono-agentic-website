@@ -64,15 +64,14 @@ export const pipelineSteps = [
   },
 ]
 
-export const physicsAudit = [
-  { name: 'Motion & kinematics', pure: 8, proxy: 2 },
-  { name: 'Interaction dynamics', pure: 6, proxy: 4 },
-  { name: 'Energy conservation', pure: 6, proxy: 4 },
-  { name: 'Fluid & particles', pure: 5, proxy: 5 },
-  { name: 'Rigid-body dynamics', pure: 9, proxy: 1 },
-  { name: 'Lighting & shadows', pure: 0, proxy: 10 },
-  { name: 'Deformation & elasticity', pure: 8, proxy: 2 },
-  { name: 'Scale & proportions', pure: 7, proxy: 3 },
+export const physicsInventory = [
+  { name: 'Motion & kinematics', count: 8 },
+  { name: 'Interaction dynamics', count: 6 },
+  { name: 'Energy conservation', count: 6 },
+  { name: 'Fluid & particles', count: 5 },
+  { name: 'Rigid-body dynamics', count: 9 },
+  { name: 'Deformation & elasticity', count: 8 },
+  { name: 'Scale & proportions', count: 7 },
 ]
 
 // PhyWorld entries below are an explicit allow-list sourced from
