@@ -64,19 +64,15 @@ export const pipelineSteps = [
   },
 ]
 
-export const physicsInventory = [
-  { name: 'Motion & kinematics', count: 8 },
-  { name: 'Interaction dynamics', count: 6 },
-  { name: 'Energy conservation', count: 6 },
-  { name: 'Fluid & particles', count: 5 },
-  { name: 'Rigid-body dynamics', count: 9 },
-  { name: 'Deformation & elasticity', count: 8 },
-  { name: 'Scale & proportions', count: 7 },
+export const demoInventory = [
+  { name: 'Mechanics', count: 3 },
+  { name: 'Fluids', count: 4 },
+  { name: 'Deformables', count: 4 },
 ]
 
 // PhyWorld entries below are an explicit allow-list sourced from
-// history_exp/physics_vs_animation_review.md. Do not add a benchmark clip
-// unless its prompt-grounded verdict is "Pure physics" in that audit.
+// history_exp/physics_vs_animation_review.md. Only audit-approved benchmark
+// clips should set `approved: true` and become eligible for display.
 export const demos = [
   {
     title: 'FloWave focused-wave pool',
@@ -85,7 +81,7 @@ export const demos = [
     video: 'media/demo-flowave-pool.mp4',
     poster: 'media/poster-flowave-pool.jpg',
     accent: '#1794b8',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: null,
     evidence: 'validated million-particle SPH',
     featured: true,
@@ -97,7 +93,7 @@ export const demos = [
     video: 'media/demo-stone-pond.mp4',
     poster: 'media/poster-stone-pond.jpg',
     accent: '#168c86',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '107-2',
     evidence: 'coupled FSI/SPH',
   },
@@ -108,7 +104,7 @@ export const demos = [
     video: 'media/demo-flexible-board.mp4',
     poster: 'media/poster-flexible-board.jpg',
     accent: '#bd7e36',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '166-2',
     evidence: 'rigid/FEA contact',
   },
@@ -119,7 +115,7 @@ export const demos = [
     video: 'media/demo-billiards.mp4',
     poster: 'media/poster-billiards.jpg',
     accent: '#46a479',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '037-2',
     evidence: 'rigid contact + impulse',
   },
@@ -130,7 +126,7 @@ export const demos = [
     video: 'media/demo-slack-rope.mp4',
     poster: 'media/poster-slack-rope.jpg',
     accent: '#d29a43',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '064-2',
     evidence: 'jointed rope + friction',
   },
@@ -141,7 +137,7 @@ export const demos = [
     video: 'media/demo-sponge.mp4',
     poster: 'media/poster-sponge.jpg',
     accent: '#e3b82f',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '070-2',
     evidence: 'FEA + platen contact',
   },
@@ -152,7 +148,7 @@ export const demos = [
     video: 'media/demo-stirred-water.mp4',
     poster: 'media/poster-stirred-water.jpg',
     accent: '#268eaf',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '111-2',
     evidence: 'motor/BCE + SPH',
   },
@@ -163,7 +159,7 @@ export const demos = [
     video: 'media/demo-pendulum.mp4',
     poster: 'media/poster-pendulum.jpg',
     accent: '#6959bd',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '095-2',
     evidence: 'gravity + constraint',
   },
@@ -174,7 +170,7 @@ export const demos = [
     video: 'media/demo-spring.mp4',
     poster: 'media/poster-spring.jpg',
     accent: '#3e72b8',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '222-2',
     evidence: 'elastic energy',
   },
@@ -185,7 +181,7 @@ export const demos = [
     video: 'media/demo-beach-ball.mp4',
     poster: 'media/poster-beach-ball.jpg',
     accent: '#d05b63',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '130-2',
     evidence: 'coupled FSI/SPH',
   },
@@ -196,7 +192,7 @@ export const demos = [
     video: 'media/demo-glass-panes.mp4',
     poster: 'media/poster-glass-panes.jpg',
     accent: '#81aeb6',
-    verdict: 'Pure physics',
+    approved: true,
     auditId: '269-2',
     evidence: 'contact + stress fracture',
   },
