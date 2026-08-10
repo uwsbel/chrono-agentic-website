@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from './Icons.jsx'
-import RosDriveDemo from './RosDriveDemo.jsx'
 import {
   authors,
   benchmarkResults,
@@ -19,18 +18,18 @@ const navItems = [
   ['overview', 'Overview'],
   ['construction', 'Construction'],
   ['worlds', 'Worlds'],
-  ['interaction', 'Interaction'],
+  ['city', 'City'],
   ['evaluation', 'Evidence'],
 ]
 
 const constructionScenes = [
   {
-    name: 'Interactive ROS city',
-    prompt: 'Build an interactive city-driving world with a 3 × 3 street grid, generated scene assets, and a vehicle exposed for live ROS control.',
+    name: 'Generated city world',
+    prompt: 'Build a city-driving world with a 3 × 3 street grid, generated scene assets, a sedan, and sensor-camera views.',
     video: 'media/hero-city.mp4',
     poster: 'media/poster-hero-city.jpg',
-    systems: 'Vehicle · sensors · ROS bridge',
-    detail: '3 × 3 grid · 130 minted assets · live mode',
+    systems: 'Vehicle · sensors · city assets',
+    detail: '3 × 3 grid · 130 minted assets · recorded rollout',
   },
   {
     name: 'Physically arranged dining room',
@@ -455,30 +454,31 @@ function Worlds({ onOpenMedia }) {
   )
 }
 
-function Interaction({ onOpenMedia }) {
+function CityWorld({ onOpenMedia }) {
   return (
-    <section className="interaction section" id="interaction">
+    <section className="interaction section" id="city">
       <div className="shell">
         <SectionHeading
-          kicker="Live ROS demonstration"
-          title={<>Connect to the city.<br />Drive the simulation.</>}
-          copy="ChronoAgentic constructs the paper's 3 × 3 street-grid world, 130 unique minted assets, and sedan. Start its ROS companion host, then use this console to send real driver inputs and inspect the running vehicle state."
+          kicker="Generated city case study"
+          title={<>The same loop builds<br />a complete city world.</>}
+          copy="ChronoAgentic constructs a 3 × 3 street grid with 130 unique minted assets, a sedan, and sensor-camera views inside one executable PyChrono scene."
           light
         />
       </div>
-      <RosDriveDemo
-        previewVideo={asset('media/hero-city.mp4')}
-        previewPoster={asset('media/poster-hero-city.jpg')}
-      />
+      <div className="shell-wide interaction-film" data-reveal>
+        <video src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline preload="metadata" />
+        <div className="interaction-film__top"><span><i /> PYCHRONO CITY · RECORDED RUN</span><span>CHASSIS · CAMERA · SCENE ASSETS</span></div>
+        <div className="interaction-film__caption"><span>GENERATED CITY WORLD</span><h3>Scene construction, vehicle dynamics, and sensor rendering execute together in one world.</h3></div>
+      </div>
       <div className="shell interaction-details">
-        <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/ros-city.png', alt: 'ROS city cameras and views', caption: 'The generated city supports live vehicle control, sensor cameras, and ROS-connected interaction.' })} data-reveal>
-          <img src={asset('media/ros-city.png')} alt="ROS city cameras, layout, and review views" loading="lazy" /><span><Icon name="expand" size={15} /> Paper demonstration</span>
+        <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/poster-hero-city.jpg', alt: 'Generated city and simulated sedan', caption: 'The generated city combines a street-grid layout, a simulated sedan, scene assets, and sensor-camera views.' })} data-reveal>
+          <img src={asset('media/poster-hero-city.jpg')} alt="Generated city and simulated sedan" loading="lazy" /><span><Icon name="expand" size={15} /> City demonstration</span>
         </button>
         <div className="interaction-details__copy" data-reveal>
           {[
-            ['01', 'Publish', 'A clock handler publishes simulation time; a body handler publishes chassis state at 25 Hz.'],
-            ['02', 'Subscribe', 'A driver-input handler receives steering, throttle, and braking commands at 25 Hz.'],
-            ['03', 'Construct', 'The accepted scene combines a 3 × 3 street grid, 130 minted assets, and a sedan model.'],
+            ['01', 'Lay out', 'A 3 × 3 street grid establishes the road network, blocks, sidewalks, and vehicle route.'],
+            ['02', 'Populate', 'The accepted scene places 130 unique minted assets across buildings and street-level props.'],
+            ['03', 'Simulate', 'A sedan, rigid-body contacts, and sensor cameras advance together in the executable scene.'],
           ].map(([number, title, copy]) => <article key={number}><span>{number}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}
         </div>
       </div>
@@ -611,7 +611,7 @@ export default function App() {
         <Overview onOpenMedia={setMedia} />
         <Construction onOpenMedia={setMedia} />
         <Worlds onOpenMedia={setMedia} />
-        <Interaction onOpenMedia={setMedia} />
+        <CityWorld onOpenMedia={setMedia} />
         <SimulationReady onOpenMedia={setMedia} />
         <Evaluation />
       </main>

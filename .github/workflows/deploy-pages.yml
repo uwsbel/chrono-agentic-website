@@ -36,9 +36,6 @@ jobs:
       - name: Build website
         env:
           VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || './' }}
-          VITE_ROS_BRIDGE_URL: ${{ vars.ROS_BRIDGE_URL }}
-          VITE_ROS_STREAM_URL: ${{ vars.ROS_STREAM_URL }}
-          VITE_ROS_NAMESPACE: ${{ vars.ROS_NAMESPACE }}
         run: npm run build
 
       - name: Add optional custom domain

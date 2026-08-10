@@ -230,5 +230,5 @@ export const capabilities = [
   ['FEA', 'Beams, shells, cables, deformation'],
   ['Fluids & FSI', 'SPH, granular media, fluid–solid coupling'],
   ['Optical sensors', 'Headless camera, lidar, light and shadow'],
-  ['ROS worlds', 'Interactive control and live telemetry'],
+  ['Generated worlds', 'Vehicles, environments, and sensor-driven scenes'],
 ]
