@@ -1,6 +1,6 @@
 export const authors = [
-  { name: 'Hongyu Wang', equal: true },
-  { name: 'Jingquan Wang', equal: true },
+  { name: 'Hongyu Wang' },
+  { name: 'Jingquan Wang' },
   { name: 'Ashvin Anilkumar' },
   { name: 'Bocheng Zou' },
   { name: 'Radu Serban' },

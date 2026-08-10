@@ -263,10 +263,10 @@ function Hero() {
         </h1>
         <div className="hero__authors" data-reveal>
           {authors.map((author, index) => (
-            <span key={author.name}>{author.name}{author.equal && <sup>*</sup>}{index < authors.length - 1 ? ',' : ''}</span>
+            <span key={author.name}>{author.name}{index < authors.length - 1 ? ',' : ''}</span>
           ))}
         </div>
-        <p className="hero__affiliation" data-reveal>University of Wisconsin–Madison · <sup>*</sup> Equal contribution</p>
+        <p className="hero__affiliation" data-reveal>University of Wisconsin–Madison</p>
         <div className="hero__links" data-reveal>
           <ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github" primary>Code</ResourceLink>
           <ResourceLink href="#worlds" icon="play">Explore demos</ResourceLink>
