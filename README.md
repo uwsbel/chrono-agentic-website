@@ -5,9 +5,11 @@ The visual research website for **ChronoAgentic: A Code-based Multi-Agent World 
 It presents ChronoAgentic through a demo-first research experience inspired by visual simulation project pages such as SceneSmith and SimWorld, with:
 
 - a full-screen generated-world hero containing the project title, authors, affiliation, and source link;
-- world construction, solver-executed physics, interactive ROS, simulation-ready artifacts, and evaluation sections;
+- the paper's six-stage plan, code-generation, execution, analysis, validation, and repair loop;
+- the offline asset-minting pipeline, interactive ROS city, staged execution, and dining-room repair case;
 - prompt-grounded, solver-executed Chrono/PyChrono videos and official system figures as the dominant visual material;
-- interactive scene selection, pipeline stages, world filters, full-screen media, and replayable-evidence metrics;
+- the reported 80-demo PhyWorldBench result and its exact evaluation boundary;
+- interactive scene selection, pipeline stages, world filters, and full-screen media;
 - responsive layouts and reduced-motion support;
 - relative asset paths suitable for GitHub Pages and other static hosts.
 
@@ -70,6 +72,10 @@ public/media/      research figures, simulation videos, posters, and social imag
 
 ## Source material
 
-The website is grounded in the local `chrono-agentic`, `chrono-studio`, and manuscript repositories. Its structure follows the project's main narrative: executable code as the world representation, a six-stage construction and review loop, live ROS interaction, and a prompt-grounded implementation audit of 80 PhyWorldBench runs. The gallery is an explicit allow-list from `history_exp/physics_vs_animation_review.md`: ten audit-approved rows are displayed, and the UI requires an internal approval flag before rendering a card. Benchmark success alone is not sufficient. The featured FloWave pool is an accepted million-particle SPH run from the same construction pipeline.
+The authoritative text source is `Manuscripts/Conference/2026/chrono-agentic/main.tex`. The site follows that paper's narrative: executable PyChrono code as the world representation; four context-isolated agent roles coordinated through persistent artifacts; six closed-loop stages; offline asset minting; staged execution and targeted repair; an 80-demo, eight-category PhyWorldBench evaluation; and a live ROS city demonstration.
+
+The evaluation section reports the paper's full 80-demo results: 93.8% semantic adherence, 88.8% physical correctness, and 82.5% on their conjunction under the stated full-video protocol. It also preserves the paper's caveat that this selected subset and judging protocol are not an official-leaderboard result.
+
+The video gallery is deliberately smaller than the evaluated set. It uses an explicit internal allow-list of selected benchmark runs, and the UI requires an approval flag before rendering a card. FloWave is retained as an additional solver demonstration and is not counted as one of the gallery-derived paper metrics.
 
 Website source code is MIT licensed. Research figures and simulation media remain copyright of their respective authors; see [NOTICE.md](NOTICE.md).
