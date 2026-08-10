@@ -726,8 +726,7 @@ dd {
   gap: 7px;
 }
 
-.scene-showcase__hud i,
-.interaction-film__top i {
+.scene-showcase__hud i {
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -1317,76 +1316,763 @@ dd {
   position: relative;
 }
 
-.interaction-film {
-  position: relative;
-  aspect-ratio: 1.9 / 1;
-  margin-top: 75px;
+.ros-drive {
+  margin-top: 72px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
-  background: #242827;
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.42);
+  color: #fff;
+  background: #090d0c;
+  box-shadow: 0 42px 110px rgba(0, 0, 0, 0.48);
 }
 
-.interaction-film > video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.ros-drive button,
+.ros-drive input,
+.ros-drive summary {
+  outline-color: #74e49b;
+  outline-offset: 3px;
 }
 
-.interaction-film::after {
+.ros-drive__toolbar {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  min-height: 62px;
+  padding: 0 19px 0 21px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 18, 17, 0.96);
+}
+
+.ros-drive__toolbar::after {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(7, 10, 10, 0.48), transparent 27%, transparent 54%, rgba(7, 10, 10, 0.75));
+  right: 0;
+  bottom: -1px;
+  width: 28%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(116, 228, 155, 0.8));
+  content: '';
+}
+
+.ros-drive__identity,
+.ros-drive__identity > div,
+.ros-drive__toolbar-actions,
+.ros-drive__toolbar-actions button {
+  display: flex;
+  align-items: center;
+}
+
+.ros-drive__identity {
+  gap: 11px;
+}
+
+.ros-drive__identity > div {
+  gap: 10px;
+}
+
+.ros-drive__identity b,
+.ros-drive__identity span,
+.ros-drive__toolbar-actions button {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ros-drive__identity b {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.ros-drive__identity > div > span {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.ros-status-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: #66706c;
+  box-shadow: 0 0 0 4px rgba(102, 112, 108, 0.1);
+}
+
+.ros-status-dot.is-connected {
+  background: #74e49b;
+  box-shadow: 0 0 0 4px rgba(116, 228, 155, 0.11), 0 0 15px rgba(116, 228, 155, 0.7);
+}
+
+.ros-status-dot.is-connecting,
+.ros-status-dot.is-reconnecting {
+  background: #e0a33c;
+  box-shadow: 0 0 0 4px rgba(224, 163, 60, 0.11);
+  animation: ros-pulse 1.2s ease-in-out infinite;
+}
+
+.ros-status-dot.is-error {
+  background: #ff755e;
+  box-shadow: 0 0 0 4px rgba(255, 117, 94, 0.12);
+}
+
+.ros-drive__toolbar-actions {
+  gap: 7px;
+}
+
+.ros-drive__toolbar-actions button {
+  min-height: 34px;
+  padding: 0 12px;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.68);
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.ros-drive__toolbar-actions button:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ros-drive__toolbar-actions button.is-danger {
+  color: #ff8b78;
+}
+
+.ros-connect {
+  position: relative;
+  z-index: 3;
+  padding: 30px 32px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+  background:
+    radial-gradient(circle at 93% 20%, rgba(38, 166, 183, 0.14), transparent 27%),
+    #111716;
+  animation: copy-in 0.35s ease both;
+}
+
+.ros-connect__heading {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.9fr) minmax(300px, 1.1fr);
+  gap: 45px;
+  align-items: end;
+}
+
+.ros-connect__heading span,
+.ros-connect label > span {
+  color: #74e49b;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ros-connect__heading h3 {
+  margin-top: 8px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 560;
+  letter-spacing: -0.035em;
+}
+
+.ros-connect__heading p {
+  max-width: 650px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.ros-connect__fields {
+  display: grid;
+  margin-top: 25px;
+  grid-template-columns: 1fr 1.25fr 0.7fr;
+  gap: 10px;
+}
+
+.ros-connect label {
+  display: grid;
+  gap: 8px;
+}
+
+.ros-connect input {
+  width: 100%;
+  height: 43px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(5, 8, 8, 0.55);
+  font-family: var(--mono);
+  font-size: 9px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.ros-connect input:focus {
+  border-color: rgba(116, 228, 155, 0.7);
+  background: rgba(5, 8, 8, 0.82);
+  outline: 0;
+}
+
+.ros-connect__warning,
+.ros-console__error {
+  margin-top: 13px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 117, 94, 0.28);
+  border-radius: 6px;
+  color: #ff9c8b;
+  background: rgba(255, 117, 94, 0.07);
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.55;
+}
+
+.ros-connect__footer {
+  display: flex;
+  margin-top: 21px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.ros-connect details {
+  width: min(730px, 100%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.ros-connect summary {
+  width: fit-content;
+  color: rgba(255, 255, 255, 0.74);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.ros-connect details p {
+  margin-top: 12px;
+}
+
+.ros-connect pre {
+  max-width: 100%;
+  margin: 10px 0 0;
+  padding: 13px;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  color: #9eb8ae;
+  background: rgba(0, 0, 0, 0.22);
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.65;
+  white-space: pre;
+}
+
+.ros-connect__submit {
+  display: inline-flex;
+  min-width: 168px;
+  min-height: 43px;
+  padding: 0 16px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 7px;
+  color: #07100b;
+  background: #74e49b;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.ros-connect__submit:hover {
+  background: #96efb4;
+  transform: translateY(-1px);
+}
+
+.ros-drive__body {
+  display: grid;
+  min-height: 650px;
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+.ros-viewport {
+  position: relative;
+  min-width: 0;
+  min-height: 650px;
+  overflow: hidden;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1b211f;
+  cursor: crosshair;
+  isolation: isolate;
+}
+
+.ros-viewport:focus {
+  outline: 0;
+}
+
+.ros-viewport.is-focused::after {
+  position: absolute;
+  z-index: 8;
+  inset: 7px;
+  border: 1px solid rgba(116, 228, 155, 0.55);
+  border-radius: 6px;
   content: '';
   pointer-events: none;
 }
 
-.interaction-film__top {
+.ros-viewport__preview,
+.ros-viewport__live,
+.ros-viewport__shade {
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ros-viewport__preview,
+.ros-viewport__live {
+  object-fit: cover;
+}
+
+.ros-viewport__preview {
+  z-index: 0;
+  filter: saturate(0.82) brightness(0.85);
+}
+
+.ros-viewport__live {
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.ros-viewport__live.is-ready {
+  opacity: 1;
+}
+
+.ros-viewport__shade {
   z-index: 2;
-  top: 22px;
-  right: 23px;
-  left: 23px;
+  background:
+    linear-gradient(180deg, rgba(4, 7, 6, 0.66), transparent 24%, transparent 58%, rgba(4, 7, 6, 0.86)),
+    linear-gradient(90deg, rgba(4, 7, 6, 0.22), transparent 35%);
+  pointer-events: none;
+}
+
+.ros-viewport__top {
+  position: absolute;
+  z-index: 4;
+  top: 20px;
+  right: 22px;
+  left: 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: rgba(255, 255, 255, 0.62);
+  gap: 15px;
+  color: rgba(255, 255, 255, 0.6);
   font-family: var(--mono);
   font-size: 7px;
-  letter-spacing: 0.1em;
-}
-
-.interaction-film__top span:first-child {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: #80e5a4;
-}
-
-.interaction-film__caption {
-  position: absolute;
-  z-index: 2;
-  right: 35px;
-  bottom: 35px;
-  left: 35px;
-  max-width: 750px;
-  color: #fff;
-}
-
-.interaction-film__caption > span {
-  color: #ff7b64;
-  font-family: var(--mono);
-  font-size: 8px;
   letter-spacing: 0.11em;
 }
 
-.interaction-film__caption h3 {
+.ros-viewport__top span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ros-viewport__top i,
+.ros-console__head > span i {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.ros-viewport__top i.is-live,
+.ros-console__head > span.is-live i {
+  background: #74e49b;
+  box-shadow: 0 0 12px rgba(116, 228, 155, 0.8);
+}
+
+.ros-viewport__hud {
+  position: absolute;
+  z-index: 4;
+  right: 27px;
+  bottom: 60px;
+  display: grid;
+  justify-items: end;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
+.ros-viewport__hud > strong {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 5px;
+  place-items: center;
+  border: 1px solid rgba(116, 228, 155, 0.55);
+  border-radius: 50%;
+  color: #8df0ae;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.ros-viewport__hud > strong.is-reverse {
+  border-color: rgba(255, 117, 94, 0.66);
+  color: #ff8b78;
+}
+
+.ros-viewport__hud > b {
+  font-size: clamp(38px, 5vw, 65px);
+  font-weight: 300;
+  letter-spacing: -0.07em;
+  line-height: 1;
+}
+
+.ros-viewport__hud > b small {
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.ros-viewport__hud > span {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+}
+
+.ros-viewport__message {
+  position: absolute;
+  z-index: 4;
+  right: 22px;
+  bottom: 22px;
+  left: 22px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ros-minimap {
+  position: absolute;
+  z-index: 4;
+  top: 55px;
+  left: 22px;
+  width: 156px;
+  height: 156px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(7, 11, 12, 0.82);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.26);
+}
+
+.ros-minimap canvas {
+  width: 156px;
+  height: 156px;
+}
+
+.ros-minimap > span {
+  position: absolute;
+  right: 7px;
+  bottom: 6px;
+  padding: 3px 5px;
+  border-radius: 3px;
+  color: #74e49b;
+  background: rgba(4, 7, 6, 0.72);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.ros-console {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  padding: 26px 24px 22px;
+  flex-direction: column;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    #0d1211;
+  background-size: 24px 24px;
+}
+
+.ros-console__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.ros-console__head > div > span {
+  color: #74e49b;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.11em;
+}
+
+.ros-console__head h3 {
+  margin-top: 7px;
+  font-size: 27px;
+  font-weight: 520;
+  letter-spacing: -0.045em;
+}
+
+.ros-console__head > span {
+  display: flex;
+  margin-top: 3px;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ros-console__head > span.is-live {
+  color: #74e49b;
+}
+
+.ros-telemetry {
+  display: grid;
+  margin-top: 25px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ros-telemetry article {
+  min-width: 0;
+  min-height: 73px;
+  padding: 13px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(4, 7, 6, 0.28);
+}
+
+.ros-telemetry article > span {
+  display: block;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: var(--mono);
+  font-size: 6.5px;
+  letter-spacing: 0.07em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ros-telemetry article > b {
+  display: block;
+  margin-top: 9px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ros-telemetry article > b small {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 7px;
+  font-weight: 400;
+}
+
+.ros-inputs {
+  display: grid;
+  margin-top: 24px;
+  gap: 11px;
+}
+
+.ros-meter {
+  display: grid;
+  grid-template-columns: 56px 1fr 33px;
+  gap: 9px;
+  align-items: center;
+}
+
+.ros-meter > span,
+.ros-meter > b {
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--mono);
+  font-size: 6.5px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ros-meter > b {
+  text-align: right;
+}
+
+.ros-meter__track {
+  position: relative;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ros-meter__track.is-signed::before {
+  position: absolute;
+  z-index: 2;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.35);
+  content: '';
+}
+
+.ros-meter__track i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: 0 0 9px currentColor;
+  transition: width 0.08s linear, transform 0.08s linear;
+}
+
+.ros-meter__track.is-signed i {
+  left: 50%;
+}
+
+.ros-touch {
+  display: grid;
+  margin-top: 25px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.ros-hold {
+  display: grid;
+  min-height: 53px;
+  padding: 8px;
+  place-items: center;
+  gap: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.035);
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.ros-hold:active:not(:disabled) {
+  border-color: rgba(97, 203, 215, 0.65);
+  background: rgba(97, 203, 215, 0.14);
+  transform: scale(0.97);
+}
+
+.ros-hold.is-throttle:active:not(:disabled) {
+  border-color: rgba(116, 228, 155, 0.7);
+  background: rgba(116, 228, 155, 0.14);
+}
+
+.ros-hold.is-brake:active:not(:disabled) {
+  border-color: rgba(255, 117, 94, 0.7);
+  background: rgba(255, 117, 94, 0.14);
+}
+
+.ros-hold:disabled,
+.ros-gears button:disabled {
+  cursor: not-allowed;
+  opacity: 0.27;
+}
+
+.ros-hold b {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.ros-hold span {
+  color: rgba(255, 255, 255, 0.34);
+  font-family: var(--mono);
+  font-size: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ros-gears {
+  display: grid;
+  margin-top: 22px;
+  grid-template-columns: repeat(3, 35px) minmax(0, 1fr);
+  gap: 6px;
+}
+
+.ros-gears button {
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.52);
+  background: rgba(255, 255, 255, 0.025);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+}
+
+.ros-gears button.is-active {
+  border-color: rgba(116, 228, 155, 0.48);
+  color: #74e49b;
+  background: rgba(116, 228, 155, 0.08);
+}
+
+.ros-gears .ros-estop {
+  padding: 0 9px;
+  color: #ff8b78;
+  border-color: rgba(255, 117, 94, 0.28);
+  white-space: nowrap;
+}
+
+.ros-gears .ros-estop.is-latched {
+  color: #101411;
+  border-color: #ff755e;
+  background: #ff755e;
+}
+
+.ros-console__foot {
+  display: flex;
+  margin-top: auto;
+  padding-top: 22px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.32);
+  font-family: var(--mono);
+  font-size: 6.5px;
+  line-height: 1.4;
+}
+
+.ros-console__foot span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ros-console__foot span:last-child {
+  flex: 0 0 auto;
+  color: rgba(116, 228, 155, 0.64);
+}
+
+.ros-console__error {
   margin-top: 12px;
-  font-size: clamp(25px, 3vw, 43px);
-  font-weight: 560;
-  letter-spacing: -0.05em;
-  line-height: 1.15;
 }
 
 .interaction-details {
@@ -1897,6 +2583,11 @@ dd {
   from { opacity: 0; transform: translateY(7px); }
 }
 
+@keyframes ros-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.86); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
 @media (max-width: 1180px) {
   :root {
     --shell: min(100% - 48px, 1080px);
@@ -1907,6 +2598,8 @@ dd {
   .scene-showcase { grid-template-columns: minmax(0, 1fr) 320px; }
   .scene-showcase__aside { padding: 24px; }
   .pipeline-copy { padding: 28px; }
+  .ros-drive__body { grid-template-columns: minmax(0, 1fr) 350px; }
+  .ros-console { padding-inline: 21px; }
 }
 
 @media (max-width: 980px) {
@@ -1922,6 +2615,24 @@ dd {
   .pipeline-viewer__figure { min-height: 480px; border-right: 0; border-bottom: 1px solid var(--line); }
   .pipeline-copy { min-height: 300px; }
   .asset-pipeline-callout { grid-template-columns: 1fr; gap: 35px; }
+  .ros-connect__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ros-connect__fields label:last-child { grid-column: 1 / -1; }
+  .ros-drive__body { min-height: 0; grid-template-columns: 1fr; }
+  .ros-viewport { min-height: 600px; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+  .ros-console {
+    display: grid;
+    min-height: 430px;
+    padding: 28px 30px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 34px;
+  }
+  .ros-console__head { grid-column: 1 / -1; grid-row: 1; }
+  .ros-telemetry { grid-column: 1; grid-row: 2 / span 2; }
+  .ros-inputs { grid-column: 2; grid-row: 2; }
+  .ros-touch { grid-column: 2; grid-row: 3; }
+  .ros-gears { grid-column: 1; grid-row: 4; }
+  .ros-console__foot { grid-column: 2; grid-row: 4; }
+  .ros-console__error { grid-column: 1 / -1; grid-row: 5; }
   .interaction-details { grid-template-columns: 1fr; }
   .interaction-details__copy { display: grid; grid-template-columns: repeat(3, 1fr); }
   .interaction-details__copy article { min-height: 180px; padding: 22px; grid-template-columns: 1fr; border-right: 1px solid rgba(255,255,255,.13); }
@@ -1994,8 +2705,14 @@ dd {
   .world-card--featured .world-card__media { aspect-ratio: 16 / 10; }
   .world-filters { overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
   .world-filters button { flex: 0 0 auto; }
-  .interaction-film { aspect-ratio: 1.25; }
-  .interaction-film > video { object-position: 58% center; }
+  .ros-drive { margin-top: 55px; border-radius: 13px; }
+  .ros-connect { padding: 26px 24px; }
+  .ros-connect__heading { grid-template-columns: 1fr; gap: 13px; }
+  .ros-connect__heading p { max-width: 620px; }
+  .ros-connect__fields { grid-template-columns: 1fr; }
+  .ros-connect__fields label:last-child { grid-column: auto; }
+  .ros-viewport { min-height: 520px; }
+  .ros-console { padding-inline: 24px; column-gap: 24px; }
   .interaction-details__copy { grid-template-columns: 1fr; }
   .interaction-details__copy article { min-height: 120px; grid-template-columns: 38px 1fr; border-right: 0; }
   .ready-layout__figure { min-height: 410px; padding: 22px; }
@@ -2055,10 +2772,32 @@ dd {
   .pipeline-copy h3 { font-size: 28px; }
   .world-card__media { aspect-ratio: 1.15; }
   .world-card__copy h3 { font-size: 20px; }
-  .interaction-film { margin-top: 55px; aspect-ratio: .92; border-radius: 12px; }
-  .interaction-film__top span:last-child { display: none; }
-  .interaction-film__caption { right: 20px; bottom: 22px; left: 20px; }
-  .interaction-film__caption h3 { font-size: 26px; }
+  .ros-drive { margin-top: 45px; border-radius: 10px; }
+  .ros-drive__toolbar { min-height: 58px; padding: 0 13px; }
+  .ros-drive__identity > div { display: grid; gap: 3px; }
+  .ros-drive__identity > div > span { font-size: 6px; }
+  .ros-drive__toolbar-actions button { width: 36px; min-height: 34px; padding: 0; justify-content: center; }
+  .ros-drive__toolbar-actions button svg { margin: 0; }
+  .ros-drive__toolbar-actions button { font-size: 0; }
+  .ros-connect { padding: 23px 17px; }
+  .ros-connect__heading h3 { font-size: 20px; }
+  .ros-connect__fields { margin-top: 21px; }
+  .ros-connect__footer { flex-direction: column; }
+  .ros-connect__submit { width: 100%; }
+  .ros-viewport { min-height: 470px; }
+  .ros-viewport__top { top: 16px; right: 16px; left: 16px; font-size: 6px; }
+  .ros-viewport__top span:last-child { display: none; }
+  .ros-minimap { top: 46px; left: 16px; width: 126px; height: 126px; }
+  .ros-minimap canvas { width: 126px; height: 126px; }
+  .ros-viewport__hud { right: 18px; bottom: 55px; }
+  .ros-viewport__message { right: 16px; bottom: 17px; left: 16px; font-size: 6px; }
+  .ros-console { display: flex; min-height: 0; padding: 24px 17px 20px; }
+  .ros-console__head h3 { font-size: 25px; }
+  .ros-telemetry { width: 100%; }
+  .ros-inputs,
+  .ros-touch { width: 100%; }
+  .ros-gears { width: 100%; grid-template-columns: repeat(3, 34px) minmax(0, 1fr); }
+  .ros-console__foot { width: 100%; margin-top: 25px; }
   .interaction-details { margin-top: 45px; gap: 35px; }
   .ready-layout { min-height: 0; margin-top: 55px; border-radius: 12px; }
   .ready-layout__figure { min-height: 290px; padding: 12px; }

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from './Icons.jsx'
+import RosDriveDemo from './RosDriveDemo.jsx'
 import {
   authors,
   benchmarkResults,
@@ -459,17 +460,16 @@ function Interaction({ onOpenMedia }) {
     <section className="interaction section" id="interaction">
       <div className="shell">
         <SectionHeading
-          kicker="Interactive world beyond the benchmark"
-          title={<>The same loop builds<br />a live ROS city.</>}
-          copy="ChronoAgentic constructs a 3 × 3 street grid with 130 unique minted assets and a sedan that an external ROS node can drive while the simulation advances."
+          kicker="Live ROS demonstration"
+          title={<>Connect to the city.<br />Drive the simulation.</>}
+          copy="ChronoAgentic constructs the paper's 3 × 3 street-grid world, 130 unique minted assets, and sedan. Start its ROS companion host, then use this console to send real driver inputs and inspect the running vehicle state."
           light
         />
       </div>
-      <div className="shell-wide interaction-film" data-reveal>
-        <video src={asset('media/hero-city.mp4')} poster={asset('media/poster-hero-city.jpg')} muted loop autoPlay playsInline preload="metadata" />
-        <div className="interaction-film__top"><span><i /> ROS BRIDGE · LIVE MODE</span><span>CLOCK · CHASSIS · DRIVER INPUTS</span></div>
-        <div className="interaction-film__caption"><span>RECORDED + LIVE MODES</span><h3>A generated city becomes a running robotics environment, not only a recorded rollout.</h3></div>
-      </div>
+      <RosDriveDemo
+        previewVideo={asset('media/hero-city.mp4')}
+        previewPoster={asset('media/poster-hero-city.jpg')}
+      />
       <div className="shell interaction-details">
         <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/ros-city.png', alt: 'ROS city cameras and views', caption: 'The generated city supports live vehicle control, sensor cameras, and ROS-connected interaction.' })} data-reveal>
           <img src={asset('media/ros-city.png')} alt="ROS city cameras, layout, and review views" loading="lazy" /><span><Icon name="expand" size={15} /> Paper demonstration</span>
