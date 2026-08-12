@@ -479,8 +479,8 @@ function CityWorld({ onOpenMedia }) {
         <div className="interaction-film__caption"><span>GENERATED CITY WORLD</span><h3>Scene construction, vehicle dynamics, and sensor rendering execute together in one world.</h3></div>
       </div>
       <div className="shell interaction-details">
-        <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/poster-hero-city.jpg', alt: 'Generated city and simulated sedan', caption: 'The generated city combines a street-grid layout, a simulated sedan, scene assets, and sensor-camera views.' })} data-reveal>
-          <img src={asset('media/poster-hero-city.jpg')} alt="Generated city and simulated sedan" loading="lazy" /><span><Icon name="expand" size={15} /> City demonstration</span>
+        <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/city-top-down.png', alt: 'Top-down view of the generated 3 × 3 city', caption: 'Top-down view of the generated city, showing nine populated blocks, the surrounding road grid, buildings, street-level assets, and the vehicle route.' })} data-reveal>
+          <img src={asset('media/city-top-down.png')} alt="Top-down view of the generated 3 × 3 city" loading="lazy" /><span><Icon name="expand" size={15} /> Top-down view</span>
         </button>
         <div className="interaction-details__copy" data-reveal>
           {[
