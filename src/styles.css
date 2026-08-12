@@ -557,9 +557,8 @@ dd {
 }
 
 .abstract-block > div {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
+  column-count: 2;
+  column-gap: 40px;
 }
 
 .abstract-block p {
@@ -2004,7 +2003,7 @@ dd {
   .hero__content { padding-top: 160px; }
   .hero h1 { font-size: clamp(35px, 7.3vw, 50px); }
   .abstract-block { grid-template-columns: 1fr; gap: 25px; }
-  .abstract-block > div { grid-template-columns: 1fr; gap: 22px; }
+  .abstract-block > div { column-count: 1; }
   .overview-principles { grid-template-columns: 1fr; }
   .overview-principles article { min-height: 190px; }
   .overview-principles h3 { margin-top: 45px; }
