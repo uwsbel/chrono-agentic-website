@@ -22,41 +22,6 @@ const navItems = [
   ['evaluation', 'Evidence'],
 ]
 
-const constructionScenes = [
-  {
-    name: 'Generated city world',
-    prompt: 'Build a city-driving world with a 3 × 3 street grid, generated scene assets, a sedan, and sensor-camera views.',
-    video: 'media/hero-city.mp4',
-    poster: 'media/poster-hero-city.jpg',
-    systems: 'Vehicle · sensors · city assets',
-    detail: '3 × 3 grid · 130 minted assets · recorded rollout',
-  },
-  {
-    name: 'Physically arranged dining room',
-    prompt: 'Create a dense dining room whose chairs face the table, whose props remain supported, and whose fruit stays contained after settling.',
-    video: 'media/demo-dining-room.mp4',
-    poster: 'media/poster-dining-room.jpg',
-    systems: 'Assets · contact · placement',
-    detail: 'visual feedback · targeted collision and pose repair',
-  },
-  {
-    name: 'Stone entering still water',
-    prompt: 'Drop a stone into a still pond and preserve the fluid–solid interaction through the full rollout.',
-    video: 'media/demo-stone-pond.mp4',
-    poster: 'media/poster-stone-pond.jpg',
-    systems: 'SPH · contact · free surface',
-    detail: 'fluid–solid coupling · recorded trajectory',
-  },
-  {
-    name: 'Elastic spring system',
-    prompt: 'Construct a spring that stores and releases energy while its deformation remains physically consistent.',
-    video: 'media/demo-spring.mp4',
-    poster: 'media/poster-spring.jpg',
-    systems: 'FEA · elasticity · energy',
-    detail: 'deformable state · sensor-camera render',
-  },
-]
-
 const worldDetails = {
   'FloWave focused-wave pool': {
     domain: 'Additional solver demonstration',
@@ -329,36 +294,6 @@ function Overview({ onOpenMedia }) {
   )
 }
 
-function SceneShowcase() {
-  const [active, setActive] = useState(0)
-  const scene = constructionScenes[active]
-
-  return (
-    <div className="scene-showcase" data-reveal>
-      <div className="scene-showcase__stage">
-        <video key={scene.video} src={asset(scene.video)} poster={asset(scene.poster)} muted loop autoPlay playsInline preload="metadata" />
-        <div className="scene-showcase__hud"><span><i /> PIPELINE OUTPUT</span><span>{String(active + 1).padStart(2, '0')} / {String(constructionScenes.length).padStart(2, '0')}</span></div>
-        <div className="scene-showcase__caption">
-          <span>SCENE OBJECTIVE</span>
-          <p>{scene.prompt}</p>
-        </div>
-      </div>
-      <aside className="scene-showcase__aside">
-        <div><h3>{scene.name}</h3><p>{scene.systems}</p></div>
-        <dl><dt>Plan</dt><dd>committed and inspectable</dd><dt>Program</dt><dd>standalone PyChrono</dd><dt>Evidence</dt><dd>{scene.detail}</dd></dl>
-        <div className="scene-showcase__selector">
-          {constructionScenes.map((item, index) => (
-            <button key={item.name} type="button" className={active === index ? 'is-active' : ''} onClick={() => setActive(index)}>
-              <img src={asset(item.poster)} alt="" />
-              <span><b>{String(index + 1).padStart(2, '0')}</b>{item.name}</span>
-            </button>
-          ))}
-        </div>
-      </aside>
-    </div>
-  )
-}
-
 function Construction({ onOpenMedia }) {
   const [stage, setStage] = useState(0)
   const active = pipelineSteps[stage]
@@ -371,7 +306,6 @@ function Construction({ onOpenMedia }) {
           title={<>One committed plan.<br />Six inspectable stages.</>}
           copy="Plan, code, visual-analysis, and review agents run in separate model contexts with scoped authority and communicate through artifacts in a shared workspace."
         />
-        <SceneShowcase />
       </div>
       <div className="shell pipeline-section">
         <div className="pipeline-section__heading" data-reveal>
