@@ -313,11 +313,19 @@ function Overview({ onOpenMedia }) {
           ].map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
         </div>
         <figure className="comparison-figure" data-reveal>
-          <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/comparison.png', alt: 'Video-based world modeling compared with executable simulation', caption: 'Video-based world modeling predicts frames from latent state. ChronoAgentic generates a program that exposes and advances physical state.' })}>
-            <img src={asset('media/comparison.png')} alt="Video-based world modeling compared with executable simulation" loading="lazy" />
-            <span><Icon name="expand" size={16} /> Expand</span>
-          </button>
-          <figcaption><b>Two world representations.</b> The paper contrasts latent video rollouts with a generated simulator program whose state, execution, and repair trail remain inspectable.</figcaption>
+          <div className="comparison-figure__grid">
+            <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/video-based-world-model.svg', alt: 'Video-based world model diagram', caption: 'The baseline conditions a latent diffusion process on image and text, then decodes the rollout into rendered frames without explicitly enforcing physical state constraints.' })}>
+              <span className="comparison-figure__label"><i>01</i> Baseline</span>
+              <img src={asset('media/video-based-world-model.svg')} alt="Video-based world model pipeline with implicit latent dynamics" loading="lazy" />
+              <span className="comparison-figure__expand"><Icon name="expand" size={15} /> Inspect diagram</span>
+            </button>
+            <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/agentic-world-simulator.svg', alt: 'Agentic world simulator diagram', caption: 'ChronoAgentic generates an executable scene program, advances it in PyChrono, and returns rollout evidence to a visual and physics review loop before acceptance.' })}>
+              <span className="comparison-figure__label is-proposed"><i>02</i> Proposed</span>
+              <img src={asset('media/agentic-world-simulator.svg')} alt="Agentic world simulator with executable PyChrono state and review-driven correction" loading="lazy" />
+              <span className="comparison-figure__expand"><Icon name="expand" size={15} /> Inspect diagram</span>
+            </button>
+          </div>
+          <figcaption><b>Two world representations.</b> The baseline decodes video from implicit latent dynamics; ChronoAgentic generates and reviews an executable program whose physical state and rollout evidence remain inspectable.</figcaption>
         </figure>
       </div>
     </section>
@@ -374,8 +382,8 @@ function Construction({ onOpenMedia }) {
           <p>The separation comes from isolated context, scoped write authority, and artifact-mediated handoffs—not model heterogeneity or parallel execution.</p>
         </div>
         <div className="pipeline-viewer" data-reveal>
-          <button className="pipeline-viewer__figure" type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/pipeline.png', alt: 'ChronoAgentic multi-agent pipeline', caption: 'A prompt and optional image become a committed plan, executable PyChrono program, staged runs, visual and trajectory evidence, and one targeted repair per iteration.' })}>
-            <img src={asset('media/pipeline.png')} alt="ChronoAgentic agent pipeline" loading="lazy" />
+          <button className="pipeline-viewer__figure" type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/pipeline.svg', alt: 'ChronoAgentic multi-agent pipeline', caption: 'A prompt and optional image become a reviewed plan, executable PyChrono code, simulation evidence, visual analysis, and a validity decision that either stops the loop or returns a targeted report.' })}>
+            <img src={asset('media/pipeline.svg')} alt="ChronoAgentic agent pipeline" loading="lazy" />
             <span><Icon name="expand" size={15} /> Paper pipeline</span>
           </button>
           <div className="pipeline-viewer__content">
