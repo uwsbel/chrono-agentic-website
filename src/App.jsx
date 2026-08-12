@@ -315,12 +315,10 @@ function Overview({ onOpenMedia }) {
         <figure className="comparison-figure" data-reveal>
           <div className="comparison-figure__grid">
             <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/video-based-world-model.svg', alt: 'Video-based world model diagram', caption: 'The baseline conditions a latent diffusion process on image and text, then decodes the rollout into rendered frames without explicitly enforcing physical state constraints.' })}>
-              <span className="comparison-figure__label"><i>01</i> Baseline</span>
               <img src={asset('media/video-based-world-model.svg')} alt="Video-based world model pipeline with implicit latent dynamics" loading="lazy" />
               <span className="comparison-figure__expand"><Icon name="expand" size={15} /> Inspect diagram</span>
             </button>
             <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/agentic-world-simulator.svg', alt: 'Agentic world simulator diagram', caption: 'ChronoAgentic generates an executable scene program, advances it in PyChrono, and returns rollout evidence to a visual and physics review loop before acceptance.' })}>
-              <span className="comparison-figure__label is-proposed"><i>02</i> Proposed</span>
               <img src={asset('media/agentic-world-simulator.svg')} alt="Agentic world simulator with executable PyChrono state and review-driven correction" loading="lazy" />
               <span className="comparison-figure__expand"><Icon name="expand" size={15} /> Inspect diagram</span>
             </button>
