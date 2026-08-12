@@ -344,7 +344,7 @@ function SceneShowcase() {
         </div>
       </div>
       <aside className="scene-showcase__aside">
-        <div><span>SELECTED CONSTRUCTION</span><h3>{scene.name}</h3><p>{scene.systems}</p></div>
+        <div><h3>{scene.name}</h3><p>{scene.systems}</p></div>
         <dl><dt>Plan</dt><dd>committed and inspectable</dd><dt>Program</dt><dd>standalone PyChrono</dd><dt>Evidence</dt><dd>{scene.detail}</dd></dl>
         <div className="scene-showcase__selector">
           {constructionScenes.map((item, index) => (

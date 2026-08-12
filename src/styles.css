@@ -790,15 +790,8 @@ dd {
   background: #151817;
 }
 
-.scene-showcase__aside > div:first-child > span {
-  color: var(--red);
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.1em;
-}
-
 .scene-showcase__aside h3 {
-  margin-top: 16px;
+  margin-top: 0;
   font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.05em;
