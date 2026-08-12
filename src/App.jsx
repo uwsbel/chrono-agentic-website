@@ -17,8 +17,8 @@ const asset = (path) => new URL(path.replace(/^\/+/, ''), publicRoot).href
 const navItems = [
   ['overview', 'Overview'],
   ['construction', 'Construction'],
-  ['worlds', 'Worlds'],
-  ['city', 'City'],
+  ['worlds', 'Physics'],
+  ['city', 'City Scene'],
   ['evaluation', 'Evidence'],
 ]
 
