@@ -3,8 +3,11 @@ import Icon from './Icons.jsx'
 import {
   authors,
   benchmarkResults,
+  comparisonCaveats,
+  comparisonMetrics,
   demos,
   pipelineSteps,
+  videoModelComparison,
 } from './data.js'
 
 // Resolve public files from the module bundle instead of the current page URL.
@@ -20,62 +23,52 @@ const navItems = [
   ['worlds', 'Physics'],
   ['city', 'City Scene'],
   ['evaluation', 'Evidence'],
+  ['video-models', 'Video models'],
 ]
 
 const worldDetails = {
   'FloWave focused-wave pool': {
     domain: 'Additional solver demonstration',
-    group: 'Fluids',
     prompt: 'A circular ring of hinged paddles drives inward waves that focus into a central free-surface spike.',
   },
   'A stone enters still water': {
     domain: 'Fluid and Particle Dynamics',
-    group: 'Fluids',
     prompt: 'A stone is dropped into a still pond, creating a splash and outward-propagating waves.',
   },
   'Energy in a pendulum': {
     domain: 'Energy Conservation',
-    group: 'Mechanics',
     prompt: 'A pendulum swings between two peaks while exchanging potential and kinetic energy.',
   },
   'A flexible board takes an impact': {
     domain: 'Deformations and Elasticity',
-    group: 'Deformables',
     prompt: 'A falling rigid sphere contacts a flexible board, which bends under impact and rebounds from its solved FEA state.',
   },
   'Two billiard balls exchange momentum': {
     domain: 'Interaction Dynamics',
-    group: 'Mechanics',
     prompt: 'Two billiard balls collide; contact impulse exchanges momentum, and friction determines their subsequent rolling.',
   },
   'A slack rope pulls a box': {
     domain: 'Interaction Dynamics',
-    group: 'Mechanics',
     prompt: 'A segmented rope straightens, becomes taut, and transmits tension through its constraints to a frictional box.',
   },
   'A sponge compresses under load': {
     domain: 'Deformations and Elasticity',
-    group: 'Deformables',
     prompt: 'Driven platens load a soft sponge while its FEA and contact state produce the visible compression and recovery.',
   },
   'Water forms a driven vortex': {
     domain: 'Fluid and Particle Dynamics',
-    group: 'Fluids',
     prompt: 'A motor-driven BCE spoon transfers momentum into SPH water and creates a vortex through the fluid solve.',
   },
   'Thickness changes fracture': {
     domain: 'Scale and Proportions',
-    group: 'Deformables',
     prompt: 'The same dynamic hammer contacts thin and thick glass panes, and measured stress produces thickness-dependent fracture.',
   },
   'A spring stores and releases': {
     domain: 'Deformations and Elasticity',
-    group: 'Deformables',
     prompt: 'An elastic spring deforms, stores energy, and returns toward its resting configuration.',
   },
   'A beach ball meets a pool': {
     domain: 'Fluid and Particle Dynamics',
-    group: 'Fluids',
     prompt: 'A beach ball falls into a pool, displaces water, and remains buoyant at the free surface.',
   },
 }
@@ -356,7 +349,7 @@ function WorldCard({ demo, index, onOpen }) {
     <article className={`world-card ${demo.featured ? 'world-card--featured' : ''}`} data-reveal onMouseEnter={play} onMouseLeave={pause}>
       <div className="world-card__media">
         <video ref={videoRef} src={asset(demo.video)} poster={asset(demo.poster)} muted loop playsInline preload="metadata" />
-        <button type="button" aria-label={`Open ${demo.title}`} onClick={() => onOpen({ type: 'video', src: demo.video, poster: demo.poster, alt: demo.title, caption: detail.prompt })}><Icon name="play" size={18} /></button>
+        <button className="world-card__open" type="button" aria-label={`Open ${demo.title}`} onClick={() => onOpen({ type: 'video', src: demo.video, poster: demo.poster, alt: demo.title, caption: detail.prompt })} />
         <span className="world-card__index">{String(index + 1).padStart(2, '0')}</span>
         <span className={`world-card__state ${playing ? 'is-playing' : ''}`}><i />{playing ? 'RUNNING' : 'HOVER TO RUN'}</span>
       </div>
@@ -371,12 +364,7 @@ function WorldCard({ demo, index, onOpen }) {
 }
 
 function Worlds({ onOpenMedia }) {
-  const [filter, setFilter] = useState('All')
-  const filters = ['All', 'Mechanics', 'Fluids', 'Deformables']
-  const visible = useMemo(
-    () => demos.filter((demo) => demo.approved && (filter === 'All' || worldDetails[demo.title].group === filter)),
-    [filter],
-  )
+  const visible = useMemo(() => demos.filter((demo) => demo.approved), [])
 
   return (
     <section className="worlds section" id="worlds">
@@ -386,8 +374,7 @@ function Worlds({ onOpenMedia }) {
           title={<>Executable programs,<br />rendered as evidence.</>}
           copy="This gallery shows a curated subset of accepted runs from the paper's PhyWorldBench campaign, together with FloWave as an additional solver demonstration. Paper-level statistics are computed on the full 80-demo set, not on this gallery."
         />
-        <div className="world-filters" data-reveal>{filters.map((item) => <button key={item} type="button" className={filter === item ? 'is-active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div>
-        <div className="world-grid">{visible.map((demo, index) => <WorldCard key={demo.title} demo={demo} index={demos.indexOf(demo)} onOpen={onOpenMedia} />)}</div>
+        <div className="world-grid">{visible.map((demo) => <WorldCard key={demo.title} demo={demo} index={demos.indexOf(demo)} onOpen={onOpenMedia} />)}</div>
       </div>
     </section>
   )
@@ -467,7 +454,7 @@ function BenchmarkBars() {
   )
 }
 
-function Evaluation() {
+function Evaluation({ onOpenMedia }) {
   return (
     <section className="evaluation section" id="evaluation">
       <div className="shell">
@@ -495,6 +482,105 @@ function Evaluation() {
               <article><span>03</span><div><b>Three reported metrics</b><p>SA requires objects and event; PC requires every Key Standard; full correctness requires both.</p></div></article>
               <article><span>04</span><div><b>Protocol boundary is explicit</b><p>The full-video, 24 fps judge and selected subset differ from the official protocol, so absolute scores are not an official leaderboard result.</p></div></article>
             </div>
+          </div>
+        </div>
+        <figure className="frames-figure" data-reveal>
+          <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/pwb-frames.jpg', alt: 'One accepted PhyWorldBench demo per physics category, shown as three key frames', caption: 'One accepted demo from each of the eight in-scope physics categories. Each strip holds three key frames selected by motion energy—setup, event, aftermath—with the benchmark prompt printed above it and time advancing left to right.' })}>
+            <img src={asset('media/pwb-frames.jpg')} alt="Three key frames from one accepted demo in each of the eight physics categories" loading="lazy" />
+            <span><Icon name="expand" size={15} /> Inspect all eight categories</span>
+          </button>
+          <figcaption><b>One accepted demo per physics category.</b> Three key frames chosen by motion energy—setup, event, aftermath—with the benchmark prompt above each strip. Left to right, top to bottom: object motion and kinematics, interaction dynamics, energy conservation, fluid and particle dynamics, rigid body dynamics, lighting and shadows, deformations and elasticity, and scale and proportions.</figcaption>
+        </figure>
+      </div>
+    </section>
+  )
+}
+
+function VideoModels() {
+  const [metric, setMetric] = useState('both')
+  const active = comparisonMetrics.find((item) => item.key === metric)
+  const baselines = useMemo(() => videoModelComparison.filter((row) => !row.ours), [])
+  const ours = useMemo(() => videoModelComparison.find((row) => row.ours), [])
+  const ranked = useMemo(() => [...videoModelComparison].sort((a, b) => b[metric] - a[metric]), [metric])
+  const mean = (key) => baselines.reduce((total, row) => total + row[key], 0) / baselines.length
+  const leader = (key) => baselines.reduce((top, row) => (row[key] > top[key] ? row : top), baselines[0])
+
+  return (
+    <section className="video-models section" id="video-models">
+      <div className="shell">
+        <SectionHeading
+          kicker="Simulator versus video world models"
+          title={<>Ten text-to-video models.<br />The same eighty prompts.</>}
+          copy="Every baseline is its official PhyWorldBench release video for the identical scenario prompt, scored by the same vision–language judge under the same full-video protocol as our rollouts. A video model predicts the next frames; ChronoAgentic runs a program whose physical state is explicit."
+        />
+        <div className="margin-cards" data-reveal>
+          {comparisonMetrics.map((item) => {
+            const top = leader(item.key)
+            const average = mean(item.key)
+            const scale = (value) => `${Math.max(value, 3)}%`
+            return (
+              <article key={item.key}>
+                <header><span>{item.short}</span><h3>{item.label}</h3></header>
+                <div className="margin-card__bars">
+                  <div className="margin-bar margin-bar--ours">
+                    <span>ChronoAgentic</span>
+                    <i style={{ width: scale(ours[item.key]) }} />
+                    <b>{ours[item.key].toFixed(1)}%</b>
+                  </div>
+                  <div className="margin-bar">
+                    <span>Best video model · {top.name}</span>
+                    <i style={{ width: scale(top[item.key]) }} />
+                    <b>{top[item.key].toFixed(1)}%</b>
+                  </div>
+                  <div className="margin-bar margin-bar--mean">
+                    <span>Ten-model mean</span>
+                    <i style={{ width: scale(average) }} />
+                    <b>{average.toFixed(1)}%</b>
+                  </div>
+                </div>
+                <p><em>+{(ours[item.key] - top[item.key]).toFixed(1)} points</em> over the strongest video model. {item.copy}</p>
+              </article>
+            )
+          })}
+        </div>
+        <div className="evaluation-panel ranking-panel" data-reveal>
+          <div className="evaluation-panel__head">
+            <div><span>PER-SYSTEM RESULT</span><h3>Eleven systems on the same 80-demo set</h3></div>
+            <div>
+              {comparisonMetrics.map((item) => (
+                <button key={item.key} type="button" className={metric === item.key ? 'is-active' : ''} aria-pressed={metric === item.key} onClick={() => setMetric(item.key)}>{item.short}</button>
+              ))}
+            </div>
+          </div>
+          <p className="ranking-panel__note">Bars and ordering follow <b>{active.short}</b>. {active.copy}</p>
+          <div className="ranking-table" role="table" aria-label={`PhyWorldBench systems ranked by ${active.label}`}>
+            <div className="ranking-row ranking-row--head" role="row">
+              <span role="columnheader">#</span>
+              <span role="columnheader">System</span>
+              <span role="columnheader" className="ranking-row__bar-head">{active.label}</span>
+              <span role="columnheader">SA</span>
+              <span role="columnheader">PC</span>
+              <span role="columnheader">SA ∧ PC</span>
+            </div>
+            {ranked.map((row, index) => (
+              <div className={`ranking-row ${row.ours ? 'ranking-row--ours' : ''}`} key={row.name} role="row">
+                <span className="ranking-row__rank" role="cell">{String(index + 1).padStart(2, '0')}</span>
+                <span className="ranking-row__name" role="cell"><b>{row.name}</b><small>{row.ours ? 'ours · code-based world simulator' : row.note}</small></span>
+                <span className="ranking-row__bar" role="cell"><i style={{ width: `${Math.max(row[metric], 2)}%` }} /></span>
+                <span className={`ranking-row__value ${metric === 'sa' ? 'is-active' : ''}`} role="cell">{row.sa.toFixed(1)}</span>
+                <span className={`ranking-row__value ${metric === 'pc' ? 'is-active' : ''}`} role="cell">{row.pc.toFixed(1)}</span>
+                <span className={`ranking-row__value ${metric === 'both' ? 'is-active' : ''}`} role="cell">{row.both.toFixed(1)}</span>
+              </div>
+            ))}
+          </div>
+          <p className="ranking-panel__foot">All values are percentages of the 80 demos. Baseline judgments cover the full demo set, so every row is scored over the same eighty prompts.</p>
+        </div>
+        <div className="caveat-strip" data-reveal>
+          <h3>What the margin does and does not show</h3>
+          <div>
+            {comparisonCaveats.map((item) => (
+              <article key={item.number}><span>{item.number}</span><div><b>{item.title}</b><p>{item.copy}</p></div></article>
+            ))}
           </div>
         </div>
       </div>
@@ -552,7 +638,8 @@ export default function App() {
         <Worlds onOpenMedia={setMedia} />
         <CityWorld onOpenMedia={setMedia} />
         <SimulationReady onOpenMedia={setMedia} />
-        <Evaluation />
+        <Evaluation onOpenMedia={setMedia} />
+        <VideoModels />
       </main>
       <Footer />
       <MediaModal media={media} onClose={() => setMedia(null)} />

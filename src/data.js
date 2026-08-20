@@ -232,3 +232,44 @@ export const capabilities = [
   ['Optical sensors', 'Headless camera, lidar, light and shadow'],
   ['Generated worlds', 'Vehicles, environments, and sensor-driven scenes'],
 ]
+
+// PhyWorldBench comparison, Table 2 (right) of the manuscript. Every baseline is
+// the official PhyWorldBench release video for the same scenario prompt, scored
+// by the same judge under the same full-video protocol as our rollouts.
+export const videoModelComparison = [
+  { name: 'ChronoAgentic', note: 'code-based world simulator', sa: 93.8, pc: 88.8, both: 82.5, ours: true },
+  { name: 'Pika', note: 'text-to-video', sa: 78.8, pc: 55.0, both: 52.5 },
+  { name: 'Kling', note: 'text-to-video', sa: 65.0, pc: 45.0, both: 42.5 },
+  { name: 'Sora', note: 'text-to-video', sa: 61.3, pc: 43.8, both: 40.0 },
+  { name: 'Luma Dream Machine', note: 'text-to-video', sa: 58.8, pc: 38.8, both: 32.5 },
+  { name: 'Runway Gen-3', note: 'text-to-video', sa: 47.5, pc: 36.2, both: 28.7 },
+  { name: 'CogVideoX', note: 'text-to-video', sa: 52.5, pc: 40.0, both: 25.0 },
+  { name: 'HunyuanVideo', note: 'text-to-video', sa: 50.0, pc: 33.8, both: 22.5 },
+  { name: 'LTX-Video', note: 'text-to-video', sa: 51.2, pc: 25.0, both: 21.2 },
+  { name: 'Open-Sora-Plan', note: 'text-to-video', sa: 25.0, pc: 18.8, both: 13.8 },
+  { name: 'Open-Sora', note: 'text-to-video', sa: 31.2, pc: 21.2, both: 11.2 },
+]
+
+export const comparisonMetrics = [
+  { key: 'both', short: 'SA ∧ PC', label: 'Full correctness', copy: 'The benchmark’s “everything correct” criterion: semantic adherence and physical correctness judged jointly.' },
+  { key: 'pc', short: 'PC', label: 'Physical correctness', copy: 'Every scenario-specific Key Standard is satisfied — the metric that depends on solver state rather than on appearance.' },
+  { key: 'sa', short: 'SA', label: 'Semantic adherence', copy: 'The prompt-specified objects and the prompt-specified event both appear in the rollout.' },
+]
+
+export const comparisonCaveats = [
+  {
+    number: '01',
+    title: 'The judge shares a model family with our reviewer',
+    copy: 'Verdicts come from Gemini 2.5 Pro, the same family as the framework’s visual-analysis agent, so part of the margin may reflect reviewer–judge alignment.',
+  },
+  {
+    number: '02',
+    title: 'Clip length is not controlled',
+    copy: 'A short baseline clip can fail the Event criterion for lack of room to complete the action, which the protocol does not correct for.',
+  },
+  {
+    number: '03',
+    title: 'Not an official leaderboard result',
+    copy: 'The full-video judge and the 80-demo in-scope subset both depart from the official eight-frame protocol, so absolute scores are not comparable to the published leaderboard.',
+  },
+]
