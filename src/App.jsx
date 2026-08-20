@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from './Icons.jsx'
 import {
   authors,
-  benchmarkResults,
-  comparisonCaveats,
   comparisonMetrics,
   demos,
   pipelineSteps,
@@ -23,7 +21,6 @@ const navItems = [
   ['worlds', 'Physics'],
   ['city', 'City Scene'],
   ['evaluation', 'Evidence'],
-  ['video-models', 'Video models'],
 ]
 
 const worldDetails = {
@@ -443,60 +440,7 @@ function SimulationReady({ onOpenMedia }) {
   )
 }
 
-function BenchmarkBars() {
-  return (
-    <div className="category-chart" aria-label="ChronoAgentic full-correctness rate by PhyWorldBench category">
-      <div className="category-chart__scale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
-      {benchmarkResults.map((row) => {
-        return <div className="category-row" key={row.name}><span>{row.name}</span><div><i style={{ width: `${row.score}%` }} /><b>{row.score}%</b></div></div>
-      })}
-    </div>
-  )
-}
-
-function Evaluation({ onOpenMedia }) {
-  return (
-    <section className="evaluation section" id="evaluation">
-      <div className="shell">
-        <SectionHeading
-          kicker="PhyWorldBench evaluation"
-          title={<>Eighty demos.<br />Eight in-scope categories.</>}
-          copy="The paper evaluates two scenarios from each of 40 selected subcategories, for 80 demos and 146 scenario-specific Key Standards. These results come from the full campaign—not from the smaller gallery above."
-        />
-        <div className="evaluation-numbers" data-reveal>
-          <article><strong><AnimatedMetric value={80} /></strong><span>Evaluation demos</span><p>two scenarios from each selected subcategory</p></article>
-          <article><strong><AnimatedMetric value={93.8} suffix="%" decimals={1} /></strong><span>Semantic adherence</span><p>required objects and event both appear</p></article>
-          <article><strong><AnimatedMetric value={88.8} suffix="%" decimals={1} /></strong><span>Physical correctness</span><p>every Key Standard for the scenario passes</p></article>
-          <article><strong><AnimatedMetric value={82.5} suffix="%" decimals={1} /></strong><span>Full correctness</span><p>semantic adherence and physical correctness jointly</p></article>
-        </div>
-        <div className="evaluation-grid">
-          <div className="evaluation-panel" data-reveal>
-            <div className="evaluation-panel__head"><div><span>PER-CATEGORY RESULT</span><h3>Full-correctness rate across the 80-demo set</h3></div><small>SA ∧ PC</small></div>
-            <BenchmarkBars />
-          </div>
-          <div className="evaluation-panel evaluation-panel--policy" data-reveal>
-            <div className="evaluation-panel__head"><div><span>REPORTING CONTRACT</span><h3>How the paper forms the score</h3></div><small>FULL VIDEO</small></div>
-            <div className="audit-rules">
-              <article><span>01</span><div><b>Fixed evaluation scope</b><p>Eight categories within the current framework scope contribute ten demos each.</p></div></article>
-              <article><span>02</span><div><b>Internal and external verdicts stay separate</b><p>A demo is scored only after internal acceptance; benchmark verdicts are never fed back into repair.</p></div></article>
-              <article><span>03</span><div><b>Three reported metrics</b><p>SA requires objects and event; PC requires every Key Standard; full correctness requires both.</p></div></article>
-              <article><span>04</span><div><b>Protocol boundary is explicit</b><p>The full-video, 24 fps judge and selected subset differ from the official protocol, so absolute scores are not an official leaderboard result.</p></div></article>
-            </div>
-          </div>
-        </div>
-        <figure className="frames-figure" data-reveal>
-          <button type="button" onClick={() => onOpenMedia({ type: 'image', src: 'media/pwb-frames.jpg', alt: 'One accepted PhyWorldBench demo per physics category, shown as three key frames', caption: 'One accepted demo from each of the eight in-scope physics categories. Each strip holds three key frames selected by motion energy—setup, event, aftermath—with the benchmark prompt printed above it and time advancing left to right.' })}>
-            <img src={asset('media/pwb-frames.jpg')} alt="Three key frames from one accepted demo in each of the eight physics categories" loading="lazy" />
-            <span><Icon name="expand" size={15} /> Inspect all eight categories</span>
-          </button>
-          <figcaption><b>One accepted demo per physics category.</b> Three key frames chosen by motion energy—setup, event, aftermath—with the benchmark prompt above each strip. Left to right, top to bottom: object motion and kinematics, interaction dynamics, energy conservation, fluid and particle dynamics, rigid body dynamics, lighting and shadows, deformations and elasticity, and scale and proportions.</figcaption>
-        </figure>
-      </div>
-    </section>
-  )
-}
-
-function VideoModels() {
+function VideoModelComparison() {
   const [metric, setMetric] = useState('both')
   const active = comparisonMetrics.find((item) => item.key === metric)
   const baselines = useMemo(() => videoModelComparison.filter((row) => !row.ours), [])
@@ -506,83 +450,93 @@ function VideoModels() {
   const leader = (key) => baselines.reduce((top, row) => (row[key] > top[key] ? row : top), baselines[0])
 
   return (
-    <section className="video-models section" id="video-models">
+    <div className="comparison-block">
+      <div className="pipeline-section__heading" data-reveal>
+        <div><span>SIMULATOR VERSUS VIDEO WORLD MODELS</span><h3>Ten text-to-video models. The same eighty prompts.</h3></div>
+        <p>Every baseline is its official PhyWorldBench release video for the identical scenario prompt, scored by the same judge under the same full-video protocol as our rollouts.</p>
+      </div>
+      <div className="margin-cards" data-reveal>
+        {comparisonMetrics.map((item) => {
+          const top = leader(item.key)
+          const average = mean(item.key)
+          const scale = (value) => `${Math.max(value, 3)}%`
+          return (
+            <article key={item.key}>
+              <header><span>{item.short}</span><h3>{item.label}</h3></header>
+              <div className="margin-card__bars">
+                <div className="margin-bar margin-bar--ours">
+                  <span>ChronoAgentic</span>
+                  <i style={{ width: scale(ours[item.key]) }} />
+                  <b>{ours[item.key].toFixed(1)}%</b>
+                </div>
+                <div className="margin-bar">
+                  <span>Best video model · {top.name}</span>
+                  <i style={{ width: scale(top[item.key]) }} />
+                  <b>{top[item.key].toFixed(1)}%</b>
+                </div>
+                <div className="margin-bar margin-bar--mean">
+                  <span>Ten-model mean</span>
+                  <i style={{ width: scale(average) }} />
+                  <b>{average.toFixed(1)}%</b>
+                </div>
+              </div>
+              <p><em>+{(ours[item.key] - top[item.key]).toFixed(1)} points</em> over the strongest video model. {item.copy}</p>
+            </article>
+          )
+        })}
+      </div>
+      <div className="evaluation-panel ranking-panel" data-reveal>
+        <div className="evaluation-panel__head">
+          <div><span>PER-SYSTEM RESULT</span><h3>Eleven systems on the same 80-demo set</h3></div>
+          <div>
+            {comparisonMetrics.map((item) => (
+              <button key={item.key} type="button" className={metric === item.key ? 'is-active' : ''} aria-pressed={metric === item.key} onClick={() => setMetric(item.key)}>{item.short}</button>
+            ))}
+          </div>
+        </div>
+        <p className="ranking-panel__note">Bars and ordering follow <b>{active.short}</b>. {active.copy}</p>
+        <div className="ranking-table" role="table" aria-label={`PhyWorldBench systems ranked by ${active.label}`}>
+          <div className="ranking-row ranking-row--head" role="row">
+            <span role="columnheader">#</span>
+            <span role="columnheader">System</span>
+            <span role="columnheader" className="ranking-row__bar-head">{active.label}</span>
+            <span role="columnheader">SA</span>
+            <span role="columnheader">PC</span>
+            <span role="columnheader">SA ∧ PC</span>
+          </div>
+          {ranked.map((row, index) => (
+            <div className={`ranking-row ${row.ours ? 'ranking-row--ours' : ''}`} key={row.name} role="row">
+              <span className="ranking-row__rank" role="cell">{String(index + 1).padStart(2, '0')}</span>
+              <span className="ranking-row__name" role="cell"><b>{row.name}</b><small>{row.ours ? 'ours · code-based world simulator' : row.note}</small></span>
+              <span className="ranking-row__bar" role="cell"><i style={{ width: `${Math.max(row[metric], 2)}%` }} /></span>
+              <span className={`ranking-row__value ${metric === 'sa' ? 'is-active' : ''}`} role="cell">{row.sa.toFixed(1)}</span>
+              <span className={`ranking-row__value ${metric === 'pc' ? 'is-active' : ''}`} role="cell">{row.pc.toFixed(1)}</span>
+              <span className={`ranking-row__value ${metric === 'both' ? 'is-active' : ''}`} role="cell">{row.both.toFixed(1)}</span>
+            </div>
+          ))}
+        </div>
+        <p className="ranking-panel__foot">All values are percentages of the 80 demos. Baseline judgments cover the full demo set, so every row is scored over the same eighty prompts.</p>
+      </div>
+    </div>
+  )
+}
+
+function Evaluation() {
+  return (
+    <section className="evaluation section" id="evaluation">
       <div className="shell">
         <SectionHeading
-          kicker="Simulator versus video world models"
-          title={<>Ten text-to-video models.<br />The same eighty prompts.</>}
-          copy="Every baseline is its official PhyWorldBench release video for the identical scenario prompt, scored by the same vision–language judge under the same full-video protocol as our rollouts. A video model predicts the next frames; ChronoAgentic runs a program whose physical state is explicit."
+          kicker="PhyWorldBench evaluation"
+          title={<>Eighty demos.<br />Judged on the full rollout.</>}
+          copy="The paper evaluates two scenarios from 8 physical categories (Object Motion and Kinematics, Interaction Dynamics, Energy Conservation, Fluid and Particle Dynamics, Rigid Body Dynamics, Lighting and Shadows, Deformations and Elasticity, Scale and Proportions) for 80 demos and 146 scenario-specific Key Standards. A vision-language judge scores on complete rollout."
         />
-        <div className="margin-cards" data-reveal>
-          {comparisonMetrics.map((item) => {
-            const top = leader(item.key)
-            const average = mean(item.key)
-            const scale = (value) => `${Math.max(value, 3)}%`
-            return (
-              <article key={item.key}>
-                <header><span>{item.short}</span><h3>{item.label}</h3></header>
-                <div className="margin-card__bars">
-                  <div className="margin-bar margin-bar--ours">
-                    <span>ChronoAgentic</span>
-                    <i style={{ width: scale(ours[item.key]) }} />
-                    <b>{ours[item.key].toFixed(1)}%</b>
-                  </div>
-                  <div className="margin-bar">
-                    <span>Best video model · {top.name}</span>
-                    <i style={{ width: scale(top[item.key]) }} />
-                    <b>{top[item.key].toFixed(1)}%</b>
-                  </div>
-                  <div className="margin-bar margin-bar--mean">
-                    <span>Ten-model mean</span>
-                    <i style={{ width: scale(average) }} />
-                    <b>{average.toFixed(1)}%</b>
-                  </div>
-                </div>
-                <p><em>+{(ours[item.key] - top[item.key]).toFixed(1)} points</em> over the strongest video model. {item.copy}</p>
-              </article>
-            )
-          })}
+        <div className="evaluation-numbers" data-reveal>
+          <article><strong><AnimatedMetric value={80} /></strong><span>Evaluation demos</span><p>two scenarios from each selected subcategory</p></article>
+          <article><strong><AnimatedMetric value={93.8} suffix="%" decimals={1} /></strong><span>Semantic adherence</span><p>required objects and event both appear</p></article>
+          <article><strong><AnimatedMetric value={88.8} suffix="%" decimals={1} /></strong><span>Physical correctness</span><p>every Key Standard for the scenario passes</p></article>
+          <article><strong><AnimatedMetric value={82.5} suffix="%" decimals={1} /></strong><span>Full correctness</span><p>semantic adherence and physical correctness jointly</p></article>
         </div>
-        <div className="evaluation-panel ranking-panel" data-reveal>
-          <div className="evaluation-panel__head">
-            <div><span>PER-SYSTEM RESULT</span><h3>Eleven systems on the same 80-demo set</h3></div>
-            <div>
-              {comparisonMetrics.map((item) => (
-                <button key={item.key} type="button" className={metric === item.key ? 'is-active' : ''} aria-pressed={metric === item.key} onClick={() => setMetric(item.key)}>{item.short}</button>
-              ))}
-            </div>
-          </div>
-          <p className="ranking-panel__note">Bars and ordering follow <b>{active.short}</b>. {active.copy}</p>
-          <div className="ranking-table" role="table" aria-label={`PhyWorldBench systems ranked by ${active.label}`}>
-            <div className="ranking-row ranking-row--head" role="row">
-              <span role="columnheader">#</span>
-              <span role="columnheader">System</span>
-              <span role="columnheader" className="ranking-row__bar-head">{active.label}</span>
-              <span role="columnheader">SA</span>
-              <span role="columnheader">PC</span>
-              <span role="columnheader">SA ∧ PC</span>
-            </div>
-            {ranked.map((row, index) => (
-              <div className={`ranking-row ${row.ours ? 'ranking-row--ours' : ''}`} key={row.name} role="row">
-                <span className="ranking-row__rank" role="cell">{String(index + 1).padStart(2, '0')}</span>
-                <span className="ranking-row__name" role="cell"><b>{row.name}</b><small>{row.ours ? 'ours · code-based world simulator' : row.note}</small></span>
-                <span className="ranking-row__bar" role="cell"><i style={{ width: `${Math.max(row[metric], 2)}%` }} /></span>
-                <span className={`ranking-row__value ${metric === 'sa' ? 'is-active' : ''}`} role="cell">{row.sa.toFixed(1)}</span>
-                <span className={`ranking-row__value ${metric === 'pc' ? 'is-active' : ''}`} role="cell">{row.pc.toFixed(1)}</span>
-                <span className={`ranking-row__value ${metric === 'both' ? 'is-active' : ''}`} role="cell">{row.both.toFixed(1)}</span>
-              </div>
-            ))}
-          </div>
-          <p className="ranking-panel__foot">All values are percentages of the 80 demos. Baseline judgments cover the full demo set, so every row is scored over the same eighty prompts.</p>
-        </div>
-        <div className="caveat-strip" data-reveal>
-          <h3>What the margin does and does not show</h3>
-          <div>
-            {comparisonCaveats.map((item) => (
-              <article key={item.number}><span>{item.number}</span><div><b>{item.title}</b><p>{item.copy}</p></div></article>
-            ))}
-          </div>
-        </div>
+        <VideoModelComparison />
       </div>
     </section>
   )
@@ -638,8 +592,7 @@ export default function App() {
         <Worlds onOpenMedia={setMedia} />
         <CityWorld onOpenMedia={setMedia} />
         <SimulationReady onOpenMedia={setMedia} />
-        <Evaluation onOpenMedia={setMedia} />
-        <VideoModels />
+        <Evaluation />
       </main>
       <Footer />
       <MediaModal media={media} onClose={() => setMedia(null)} />

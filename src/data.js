@@ -64,17 +64,6 @@ export const pipelineSteps = [
   },
 ]
 
-export const benchmarkResults = [
-  { name: 'Object Motion and Kinematics', score: 90 },
-  { name: 'Interaction Dynamics', score: 90 },
-  { name: 'Energy Conservation', score: 100 },
-  { name: 'Fluid and Particle Dynamics', score: 50 },
-  { name: 'Rigid Body Dynamics', score: 90 },
-  { name: 'Lighting and Shadows', score: 70 },
-  { name: 'Deformations and Elasticity', score: 80 },
-  { name: 'Scale and Proportions', score: 90 },
-]
-
 // PhyWorld entries below are an explicit allow-list from the internal
 // prompt-grounded implementation review. Only approved benchmark clips should
 // set `approved: true` and become eligible for display.
@@ -254,22 +243,4 @@ export const comparisonMetrics = [
   { key: 'both', short: 'SA ∧ PC', label: 'Full correctness', copy: 'The benchmark’s “everything correct” criterion: semantic adherence and physical correctness judged jointly.' },
   { key: 'pc', short: 'PC', label: 'Physical correctness', copy: 'Every scenario-specific Key Standard is satisfied — the metric that depends on solver state rather than on appearance.' },
   { key: 'sa', short: 'SA', label: 'Semantic adherence', copy: 'The prompt-specified objects and the prompt-specified event both appear in the rollout.' },
-]
-
-export const comparisonCaveats = [
-  {
-    number: '01',
-    title: 'The judge shares a model family with our reviewer',
-    copy: 'Verdicts come from Gemini 2.5 Pro, the same family as the framework’s visual-analysis agent, so part of the margin may reflect reviewer–judge alignment.',
-  },
-  {
-    number: '02',
-    title: 'Clip length is not controlled',
-    copy: 'A short baseline clip can fail the Event criterion for lack of room to complete the action, which the protocol does not correct for.',
-  },
-  {
-    number: '03',
-    title: 'Not an official leaderboard result',
-    copy: 'The full-video judge and the 80-demo in-scope subset both depart from the official eight-frame protocol, so absolute scores are not comparable to the published leaderboard.',
-  },
 ]
