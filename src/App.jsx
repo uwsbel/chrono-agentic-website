@@ -23,6 +23,17 @@ const navItems = [
   ['evaluation', 'Evidence'],
 ]
 
+const paperUrl = 'https://arxiv.org/abs/2605.14398'
+const paperBibtex = `@misc{wang2026chronoagenticcodebasedmultiagentworld,
+  title={ChronoAgentic: A Code-based Multi-Agent World Simulator for Physically Grounded Simulation Construction},
+  author={Hongyu Wang and Jingquan Wang and Ashvin Anilkumar and Bocheng Zou and Radu Serban and Dan Negrut},
+  year={2026},
+  eprint={2605.14398},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  url={https://arxiv.org/abs/2605.14398},
+}`
+
 const worldDetails = {
   'FloWave focused-wave pool': {
     domain: 'Additional solver demonstration',
@@ -234,9 +245,9 @@ function Hero() {
         </div>
         <p className="hero__affiliation" data-reveal>University of Wisconsin–Madison</p>
         <div className="hero__links" data-reveal>
-          <ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github" primary>Code</ResourceLink>
+          <ResourceLink href={paperUrl} icon="external" primary>Paper</ResourceLink>
+          <ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github">Code</ResourceLink>
           <ResourceLink href="#worlds" icon="play">Selected rollouts</ResourceLink>
-          <ResourceLink href="#construction" icon="code">Method</ResourceLink>
         </div>
       </div>
       <a className="hero__scroll" href="#overview"><span>Explore the work</span><i /></a>
@@ -542,10 +553,48 @@ function Evaluation() {
   )
 }
 
+function Citation() {
+  const [copied, setCopied] = useState(false)
+
+  const copyBibtex = async () => {
+    try {
+      await navigator.clipboard.writeText(paperBibtex)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopied(false)
+    }
+  }
+
+  return (
+    <section className="citation section" id="citation">
+      <div className="shell">
+        <SectionHeading
+          kicker="Publication"
+          title={<>Read and cite<br />ChronoAgentic.</>}
+          copy="The full paper is available on arXiv. Use the reference below when citing this work."
+        />
+        <div className="citation-card" data-reveal>
+          <div className="citation-card__details">
+            <span>ARXIV PREPRINT · 2026</span>
+            <h3><a href={paperUrl} target="_blank" rel="noreferrer">ChronoAgentic: A Code-based Multi-Agent World Simulator for Physically Grounded Simulation Construction <Icon name="external" size={18} /></a></h3>
+            <p>{authors.map((author) => author.name).join(', ')}</p>
+            <div className="citation-card__actions">
+              <a href={paperUrl} target="_blank" rel="noreferrer"><Icon name="external" size={15} /> arXiv:2605.14398</a>
+              <button type="button" onClick={copyBibtex} aria-live="polite"><Icon name={copied ? 'check' : 'copy'} size={15} /> {copied ? 'Copied' : 'Copy BibTeX'}</button>
+            </div>
+          </div>
+          <pre aria-label="BibTeX citation"><code>{paperBibtex}</code></pre>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Footer() {
   return (
     <footer className="footer">
-      <div className="shell footer__main"><a className="footer__project" href="#top">Chrono<span>Agentic</span></a><p>A code-based multi-agent world simulator for physically grounded simulation construction.</p><div><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://projectchrono.org/" target="_blank" rel="noreferrer">Project Chrono</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
+      <div className="shell footer__main"><a className="footer__project" href="#top">Chrono<span>Agentic</span></a><p>A code-based multi-agent world simulator for physically grounded simulation construction.</p><div><a href={paperUrl} target="_blank" rel="noreferrer">Paper</a><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://projectchrono.org/" target="_blank" rel="noreferrer">Project Chrono</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
       <div className="shell footer__bottom"><span>ChronoAgentic · 2026</span><span>University of Wisconsin–Madison</span><a href="#top">Back to top ↑</a></div>
     </footer>
   )
@@ -593,6 +642,7 @@ export default function App() {
         <CityWorld onOpenMedia={setMedia} />
         <SimulationReady onOpenMedia={setMedia} />
         <Evaluation />
+        <Citation />
       </main>
       <Footer />
       <MediaModal media={media} onClose={() => setMedia(null)} />
