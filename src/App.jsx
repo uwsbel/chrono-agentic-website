@@ -195,9 +195,6 @@ function Navigation({ activeSection }) {
               <a key={id} href={`#${id}`} className={activeSection === id ? 'is-active' : ''} onClick={() => setOpen(false)}>{label}</a>
             ))}
           </div>
-          <a className="nav__code" href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">
-            <Icon name="github" size={15} /> Code
-          </a>
         </div>
         <button className="nav__menu" type="button" aria-label="Toggle navigation" aria-expanded={open} onClick={() => setOpen(!open)}>
           <Icon name={open ? 'close' : 'menu'} size={22} />
@@ -246,7 +243,6 @@ function Hero() {
         <p className="hero__affiliation" data-reveal>University of Wisconsin–Madison</p>
         <div className="hero__links" data-reveal>
           <ResourceLink href={paperUrl} icon="external" primary>Paper</ResourceLink>
-          <ResourceLink href="https://github.com/Hongyu0329/chrono-agentic" icon="github">Code</ResourceLink>
           <ResourceLink href="#worlds" icon="play">Selected rollouts</ResourceLink>
         </div>
       </div>
@@ -594,7 +590,7 @@ function Citation() {
 function Footer() {
   return (
     <footer className="footer">
-      <div className="shell footer__main"><a className="footer__project" href="#top">Chrono<span>Agentic</span></a><p>A code-based multi-agent world simulator for physically grounded simulation construction.</p><div><a href={paperUrl} target="_blank" rel="noreferrer">Paper</a><a href="https://github.com/Hongyu0329/chrono-agentic" target="_blank" rel="noreferrer">GitHub</a><a href="https://projectchrono.org/" target="_blank" rel="noreferrer">Project Chrono</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
+      <div className="shell footer__main"><a className="footer__project" href="#top">Chrono<span>Agentic</span></a><p>A code-based multi-agent world simulator for physically grounded simulation construction.</p><div><a href={paperUrl} target="_blank" rel="noreferrer">Paper</a><a href="https://projectchrono.org/" target="_blank" rel="noreferrer">Project Chrono</a><a href="https://sbel.wisc.edu/" target="_blank" rel="noreferrer">UW–Madison SBEL</a></div></div>
       <div className="shell footer__bottom"><span>ChronoAgentic · 2026</span><span>University of Wisconsin–Madison</span><a href="#top">Back to top ↑</a></div>
     </footer>
   )
